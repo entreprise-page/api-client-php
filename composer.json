@@ -1,0 +1,47 @@
+{
+    "name": "entreprise-page/api-client",
+    "description": "Client PHP de l'API entreprise.page, basé sur PSR-18 et PSR-17",
+    "type": "library",
+    "license": "proprietary",
+    "keywords": ["entreprise.page", "siren", "siret", "api", "psr-18"],
+    "require": {
+        "php": ">=8.2",
+        "ext-json": "*",
+        "php-http/discovery": "^1.19",
+        "psr/http-client": "^1.0",
+        "psr/http-client-implementation": "^1.0",
+        "psr/http-factory": "^1.0",
+        "psr/http-factory-implementation": "^1.0",
+        "psr/http-message": "^1.1 || ^2.0"
+    },
+    "require-dev": {
+        "nyholm/psr7": "^1.8",
+        "phpstan/phpstan": "^2.1",
+        "phpunit/phpunit": "^11.5",
+        "symfony/http-client": "^7.4"
+    },
+    "suggest": {
+        "symfony/http-client": "Implémentation PSR-18 recommandée dans une application Symfony"
+    },
+    "autoload": {
+        "psr-4": {
+            "EntreprisePage\\ApiClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "EntreprisePage\\ApiClient\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "generate": "php bin/generate-models.php ../../../api/docs/swagger.json src/Model",
+        "test": "phpunit",
+        "phpstan": "phpstan analyse"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        },
+        "sort-packages": true
+    }
+}
