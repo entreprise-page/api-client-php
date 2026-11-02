@@ -9,54 +9,149 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Annonce
+final class Annonce
 {
+    /**
+     * Exemple : "A202001221441"
+     *
+     * @readonly
+     */
+    public string $id;
+
+    /**
+     * Exemple : "vente"
+     *
+     * @readonly
+     */
+    public string $famille;
+
+    /**
+     * Exemple : "annonce"
+     *
+     * @readonly
+     */
+    public string $typeAvis;
+
+    /**
+     * Exemple : "2020-06-28"
+     *
+     * @readonly
+     */
+    public ?string $dateParution;
+
+    /**
+     * @readonly
+     */
+    public ?ActeAnnonce $acte;
+
+    /**
+     * @readonly
+     */
+    public ?AvisPrecedentAnnonce $avisPrecedent;
+
+    /**
+     * @readonly
+     */
+    public ?DepotAnnonce $depot;
+
+    /**
+     * @readonly
+     */
+    public ?EtablissementAnnonce $etablissement;
+
+    /**
+     * @readonly
+     */
+    public ?JugementAnnonce $jugement;
+
+    /**
+     * @readonly
+     */
+    public ?ModificationAnnonce $modification;
+
+    /**
+     * Exemple : "75"
+     *
+     * @readonly
+     */
+    public ?string $numeroDepartement;
+
+    /**
+     * @readonly
+     */
+    public ParutionAnnonce $parution;
+
+    /**
+     * @var list<PersonneAnnonce>
+     * @readonly
+     */
+    public array $personnes;
+
+    /**
+     * @var list<PersonneAnnonce>
+     * @readonly
+     */
+    public array $precedentsExploitants;
+
+    /**
+     * @var list<PersonneAnnonce>
+     * @readonly
+     */
+    public array $precedentsProprietaires;
+
+    /**
+     * @readonly
+     */
+    public ?RadiationAnnonce $radiation;
+
+    /**
+     * Exemple : "Paris"
+     *
+     * @readonly
+     */
+    public ?string $tribunal;
+
+    /**
+     * @param list<PersonneAnnonce> $personnes
+     * @param list<PersonneAnnonce> $precedentsExploitants
+     * @param list<PersonneAnnonce> $precedentsProprietaires
+     */
     public function __construct(
-        /**
-         * Exemple : "A202001221441"
-         */
-        public string $id,
-        /**
-         * Exemple : "vente"
-         */
-        public string $famille,
-        /**
-         * Exemple : "annonce"
-         */
-        public string $typeAvis,
-        /**
-         * Exemple : "2020-06-28"
-         */
-        public ?string $dateParution,
-        public ?ActeAnnonce $acte,
-        public ?AvisPrecedentAnnonce $avisPrecedent,
-        public ?DepotAnnonce $depot,
-        public ?EtablissementAnnonce $etablissement,
-        public ?JugementAnnonce $jugement,
-        public ?ModificationAnnonce $modification,
-        /**
-         * Exemple : "75"
-         */
-        public ?string $numeroDepartement,
-        public ParutionAnnonce $parution,
-        /**
-         * @var list<PersonneAnnonce>
-         */
-        public array $personnes,
-        /**
-         * @var list<PersonneAnnonce>
-         */
-        public array $precedentsExploitants,
-        /**
-         * @var list<PersonneAnnonce>
-         */
-        public array $precedentsProprietaires,
-        public ?RadiationAnnonce $radiation,
-        /**
-         * Exemple : "Paris"
-         */
-        public ?string $tribunal,
+        string $id,
+        string $famille,
+        string $typeAvis,
+        ?string $dateParution,
+        ?ActeAnnonce $acte,
+        ?AvisPrecedentAnnonce $avisPrecedent,
+        ?DepotAnnonce $depot,
+        ?EtablissementAnnonce $etablissement,
+        ?JugementAnnonce $jugement,
+        ?ModificationAnnonce $modification,
+        ?string $numeroDepartement,
+        ParutionAnnonce $parution,
+        array $personnes,
+        array $precedentsExploitants,
+        array $precedentsProprietaires,
+        ?RadiationAnnonce $radiation,
+        ?string $tribunal
     ) {
+        $this->id = $id;
+        $this->famille = $famille;
+        $this->typeAvis = $typeAvis;
+        $this->dateParution = $dateParution;
+        $this->acte = $acte;
+        $this->avisPrecedent = $avisPrecedent;
+        $this->depot = $depot;
+        $this->etablissement = $etablissement;
+        $this->jugement = $jugement;
+        $this->modification = $modification;
+        $this->numeroDepartement = $numeroDepartement;
+        $this->parution = $parution;
+        $this->personnes = $personnes;
+        $this->precedentsExploitants = $precedentsExploitants;
+        $this->precedentsProprietaires = $precedentsProprietaires;
+        $this->radiation = $radiation;
+        $this->tribunal = $tribunal;
     }
 
     /**
@@ -65,23 +160,23 @@ final readonly class Annonce
     public static function fromArray(array $data): self
     {
         return new self(
-            id: Data::string($data, 'id'),
-            famille: Data::string($data, 'famille'),
-            typeAvis: Data::string($data, 'type_avis'),
-            dateParution: Data::nullableString($data, 'date_parution'),
-            acte: Data::nullableObject($data, 'acte', ActeAnnonce::fromArray(...)),
-            avisPrecedent: Data::nullableObject($data, 'avis_precedent', AvisPrecedentAnnonce::fromArray(...)),
-            depot: Data::nullableObject($data, 'depot', DepotAnnonce::fromArray(...)),
-            etablissement: Data::nullableObject($data, 'etablissement', EtablissementAnnonce::fromArray(...)),
-            jugement: Data::nullableObject($data, 'jugement', JugementAnnonce::fromArray(...)),
-            modification: Data::nullableObject($data, 'modification', ModificationAnnonce::fromArray(...)),
-            numeroDepartement: Data::nullableString($data, 'numero_departement'),
-            parution: Data::object($data, 'parution', ParutionAnnonce::fromArray(...)),
-            personnes: Data::objectList($data, 'personnes', PersonneAnnonce::fromArray(...)),
-            precedentsExploitants: Data::objectList($data, 'precedents_exploitants', PersonneAnnonce::fromArray(...)),
-            precedentsProprietaires: Data::objectList($data, 'precedents_proprietaires', PersonneAnnonce::fromArray(...)),
-            radiation: Data::nullableObject($data, 'radiation', RadiationAnnonce::fromArray(...)),
-            tribunal: Data::nullableString($data, 'tribunal'),
+            Data::string($data, 'id'),
+            Data::string($data, 'famille'),
+            Data::string($data, 'type_avis'),
+            Data::nullableString($data, 'date_parution'),
+            Data::nullableObject($data, 'acte', [ActeAnnonce::class, 'fromArray']),
+            Data::nullableObject($data, 'avis_precedent', [AvisPrecedentAnnonce::class, 'fromArray']),
+            Data::nullableObject($data, 'depot', [DepotAnnonce::class, 'fromArray']),
+            Data::nullableObject($data, 'etablissement', [EtablissementAnnonce::class, 'fromArray']),
+            Data::nullableObject($data, 'jugement', [JugementAnnonce::class, 'fromArray']),
+            Data::nullableObject($data, 'modification', [ModificationAnnonce::class, 'fromArray']),
+            Data::nullableString($data, 'numero_departement'),
+            Data::object($data, 'parution', [ParutionAnnonce::class, 'fromArray']),
+            Data::objectList($data, 'personnes', [PersonneAnnonce::class, 'fromArray']),
+            Data::objectList($data, 'precedents_exploitants', [PersonneAnnonce::class, 'fromArray']),
+            Data::objectList($data, 'precedents_proprietaires', [PersonneAnnonce::class, 'fromArray']),
+            Data::nullableObject($data, 'radiation', [RadiationAnnonce::class, 'fromArray']),
+            Data::nullableString($data, 'tribunal'),
         );
     }
 }

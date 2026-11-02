@@ -9,22 +9,37 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Activite
+final class Activite
 {
+    /**
+     * Exemple : "62.02A"
+     *
+     * @readonly
+     */
+    public string $code;
+
+    /**
+     * Exemple : "Conseil en systèmes et logiciels informatiques"
+     *
+     * @readonly
+     */
+    public ?string $libelle;
+
+    /**
+     * Exemple : "Programmation, conseil et autres activités informatiques"
+     *
+     * @readonly
+     */
+    public ?string $section;
+
     public function __construct(
-        /**
-         * Exemple : "62.02A"
-         */
-        public string $code,
-        /**
-         * Exemple : "Conseil en systèmes et logiciels informatiques"
-         */
-        public ?string $libelle,
-        /**
-         * Exemple : "Programmation, conseil et autres activités informatiques"
-         */
-        public ?string $section,
+        string $code,
+        ?string $libelle,
+        ?string $section
     ) {
+        $this->code = $code;
+        $this->libelle = $libelle;
+        $this->section = $section;
     }
 
     /**
@@ -33,9 +48,9 @@ final readonly class Activite
     public static function fromArray(array $data): self
     {
         return new self(
-            code: Data::string($data, 'code'),
-            libelle: Data::nullableString($data, 'libelle'),
-            section: Data::nullableString($data, 'section'),
+            Data::string($data, 'code'),
+            Data::nullableString($data, 'libelle'),
+            Data::nullableString($data, 'section'),
         );
     }
 }

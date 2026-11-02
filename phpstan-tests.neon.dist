@@ -1,0 +1,6 @@
+# Tests : analysés avec la version de PHP courante, car PHPUnit 9 (PHP 7.4)
+# et PHPUnit 11 (PHP 8.2+) ne peuvent pas être résolus ensemble.
+parameters:
+    level: max
+    paths:
+        - tests

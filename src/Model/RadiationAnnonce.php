@@ -9,19 +9,35 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class RadiationAnnonce
+final class RadiationAnnonce
 {
+    /**
+     * @readonly
+     */
+    public ?string $commentaire;
+
+    /**
+     * Exemple : "2020-05-31"
+     *
+     * @readonly
+     */
+    public ?string $dateCessationActivite;
+
+    /**
+     * Exemple : "2020-06-10"
+     *
+     * @readonly
+     */
+    public ?string $dateRadiation;
+
     public function __construct(
-        public ?string $commentaire,
-        /**
-         * Exemple : "2020-05-31"
-         */
-        public ?string $dateCessationActivite,
-        /**
-         * Exemple : "2020-06-10"
-         */
-        public ?string $dateRadiation,
+        ?string $commentaire,
+        ?string $dateCessationActivite,
+        ?string $dateRadiation
     ) {
+        $this->commentaire = $commentaire;
+        $this->dateCessationActivite = $dateCessationActivite;
+        $this->dateRadiation = $dateRadiation;
     }
 
     /**
@@ -30,9 +46,9 @@ final readonly class RadiationAnnonce
     public static function fromArray(array $data): self
     {
         return new self(
-            commentaire: Data::nullableString($data, 'commentaire'),
-            dateCessationActivite: Data::nullableString($data, 'date_cessation_activite'),
-            dateRadiation: Data::nullableString($data, 'date_radiation'),
+            Data::nullableString($data, 'commentaire'),
+            Data::nullableString($data, 'date_cessation_activite'),
+            Data::nullableString($data, 'date_radiation'),
         );
     }
 }

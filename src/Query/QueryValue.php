@@ -21,9 +21,21 @@ final class QueryValue
         return null === $value ? null : (string) $value;
     }
 
+    /**
+     * Retire les critères non renseignés.
+     *
+     * @param array<string, string|null> $values
+     *
+     * @return array<string, string>
+     */
+    public static function filter(array $values): array
+    {
+        return array_filter($values, static fn (?string $value): bool => null !== $value && '' !== $value);
+    }
+
     public static function float(?float $value): ?string
     {
-        // (string) sur un float est indépendant de la locale depuis PHP 8.
-        return null === $value ? null : (string) $value;
+        // var_export ne dépend pas de la locale, contrairement à (string) avant PHP 8.
+        return null === $value ? null : var_export($value, true);
     }
 }

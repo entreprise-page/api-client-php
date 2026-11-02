@@ -8,29 +8,69 @@ use EntreprisePage\ApiClient\Exception\InvalidArgumentException;
 
 /**
  * Critères de GET /dictionnaire/recherche/activite.
+ *
+ * Immuable : chaque méthode with…() renvoie une copie.
  */
-final readonly class RechercheActiviteQuery
+final class RechercheActiviteQuery
 {
+    private string $query;
+    private ?string $section = null;
+    private ?int $page = null;
+    private ?int $parPage = null;
+
+    private function __construct(string $query)
+    {
+        $this->query = $query;
+    }
+
     /**
-     * @param string      $query   terme en langage courant, par exemple « plombier »
-     * @param string|null $section restreint à une section de la nomenclature, par exemple « Construction »
-     * @param int|null    $parPage 1 à 100
+     * @param string $query terme en langage courant, par exemple « plombier »
      */
-    public function __construct(
-        public string $query,
-        public ?string $section = null,
-        public ?int $page = null,
-        public ?int $parPage = null,
-    ) {
+    public static function create(string $query): self
+    {
         if ('' === trim($query)) {
             throw new InvalidArgumentException('query est obligatoire.');
         }
-        if (null !== $page && $page < 1) {
+
+        return new self($query);
+    }
+
+    /**
+     * @param string $section section de la nomenclature, par exemple « Construction »
+     */
+    public function withSection(string $section): self
+    {
+        $clone = clone $this;
+        $clone->section = $section;
+
+        return $clone;
+    }
+
+    public function withPage(int $page): self
+    {
+        if ($page < 1) {
             throw new InvalidArgumentException('page doit être supérieure ou égale à 1.');
         }
-        if (null !== $parPage && ($parPage < 1 || $parPage > 100)) {
+
+        $clone = clone $this;
+        $clone->page = $page;
+
+        return $clone;
+    }
+
+    /**
+     * @param int $parPage de 1 à 100
+     */
+    public function withParPage(int $parPage): self
+    {
+        if ($parPage < 1 || $parPage > 100) {
             throw new InvalidArgumentException('parPage doit être compris entre 1 et 100.');
         }
+
+        $clone = clone $this;
+        $clone->parPage = $parPage;
+
+        return $clone;
     }
 
     /**
@@ -38,11 +78,11 @@ final readonly class RechercheActiviteQuery
      */
     public function toQuery(): array
     {
-        return array_filter([
+        return QueryValue::filter([
             'query' => $this->query,
             'section' => $this->section,
             'page' => QueryValue::int($this->page),
             'par_page' => QueryValue::int($this->parPage),
-        ], static fn (?string $value): bool => null !== $value && '' !== $value);
+        ]);
     }
 }

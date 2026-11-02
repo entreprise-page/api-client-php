@@ -8,13 +8,16 @@ use EntreprisePage\ApiClient\Http\Transport;
 use EntreprisePage\ApiClient\Hydration\Data;
 use EntreprisePage\ApiClient\Model\FormeJuridique;
 
-final readonly class FormeJuridiqueApi
+final class FormeJuridiqueApi
 {
     /**
      * @internal utiliser Client::formesJuridiques()
      */
-    public function __construct(private Transport $transport)
+    private Transport $transport;
+
+    public function __construct(Transport $transport)
     {
+        $this->transport = $transport;
     }
 
     /**
@@ -24,7 +27,7 @@ final readonly class FormeJuridiqueApi
      */
     public function list(): array
     {
-        return Data::mapList($this->transport->get('/dictionnaire/forme-juridique'), FormeJuridique::fromArray(...));
+        return Data::mapList($this->transport->get('/dictionnaire/forme-juridique'), [FormeJuridique::class, 'fromArray']);
     }
 
     /**

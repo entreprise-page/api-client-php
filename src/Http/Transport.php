@@ -16,15 +16,26 @@ use Psr\Http\Message\RequestFactoryInterface;
  *
  * @internal
  */
-final readonly class Transport
+final class Transport
 {
+    private ClientInterface $httpClient;
+    private RequestFactoryInterface $requestFactory;
+    private string $baseUri;
+    private ?string $apiKey;
+    private string $userAgent;
+
     public function __construct(
-        private ClientInterface $httpClient,
-        private RequestFactoryInterface $requestFactory,
-        private string $baseUri,
-        private ?string $apiKey,
-        private string $userAgent,
+        ClientInterface $httpClient,
+        RequestFactoryInterface $requestFactory,
+        string $baseUri,
+        ?string $apiKey,
+        string $userAgent
     ) {
+        $this->httpClient = $httpClient;
+        $this->requestFactory = $requestFactory;
+        $this->baseUri = $baseUri;
+        $this->apiKey = $apiKey;
+        $this->userAgent = $userAgent;
     }
 
     /**

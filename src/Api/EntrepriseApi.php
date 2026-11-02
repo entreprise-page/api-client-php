@@ -11,13 +11,16 @@ use EntreprisePage\ApiClient\Model\RechercheEntreprise;
 use EntreprisePage\ApiClient\Model\Suggestion;
 use EntreprisePage\ApiClient\Query\RechercheEntrepriseQuery;
 
-final readonly class EntrepriseApi
+final class EntrepriseApi
 {
     /**
      * @internal utiliser Client::entreprises()
      */
-    public function __construct(private Transport $transport)
+    private Transport $transport;
+
+    public function __construct(Transport $transport)
     {
+        $this->transport = $transport;
     }
 
     /**
@@ -30,11 +33,13 @@ final readonly class EntrepriseApi
 
     /**
      * GET /organisation/recherche — nécessite une clé d'API et consomme le quota.
+     *
+     * @param RechercheEntrepriseQuery|string $query
      */
-    public function search(RechercheEntrepriseQuery|string $query): RechercheEntreprise
+    public function search($query): RechercheEntreprise
     {
-        if (\is_string($query)) {
-            $query = new RechercheEntrepriseQuery($query);
+        if (!$query instanceof RechercheEntrepriseQuery) {
+            $query = RechercheEntrepriseQuery::create($query);
         }
 
         return RechercheEntreprise::fromArray($this->transport->get('/organisation/recherche', $query->toQuery()));
@@ -54,6 +59,6 @@ final readonly class EntrepriseApi
             $params['limit'] = (string) $limit;
         }
 
-        return Data::mapList($this->transport->get('/organisation/suggestion', $params), Suggestion::fromArray(...));
+        return Data::mapList($this->transport->get('/organisation/suggestion', $params), [Suggestion::class, 'fromArray']);
     }
 }

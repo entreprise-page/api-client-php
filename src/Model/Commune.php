@@ -9,18 +9,28 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Commune
+final class Commune
 {
+    /**
+     * Exemple : "75009"
+     *
+     * @readonly
+     */
+    public string $code;
+
+    /**
+     * Exemple : "Paris"
+     *
+     * @readonly
+     */
+    public string $libelle;
+
     public function __construct(
-        /**
-         * Exemple : "75009"
-         */
-        public string $code,
-        /**
-         * Exemple : "Paris"
-         */
-        public string $libelle,
+        string $code,
+        string $libelle
     ) {
+        $this->code = $code;
+        $this->libelle = $libelle;
     }
 
     /**
@@ -29,8 +39,8 @@ final readonly class Commune
     public static function fromArray(array $data): self
     {
         return new self(
-            code: Data::string($data, 'code'),
-            libelle: Data::string($data, 'libelle'),
+            Data::string($data, 'code'),
+            Data::string($data, 'libelle'),
         );
     }
 }

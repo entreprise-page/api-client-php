@@ -2,9 +2,9 @@
 
 Client PHP de l'[API entreprise.page](https://api.entreprise.page/v1), construit à partir du swagger de l'API (`api/docs/swagger.json`).
 
-- PHP 8.2 ou plus.
+- PHP 7.4 ou plus (testé de 7.4 à 8.5).
 - Client HTTP au choix : n'importe quelle implémentation [PSR-18](https://www.php-fig.org/psr/psr-18/) (Symfony HttpClient, Guzzle…) et une fabrique de requêtes [PSR-17](https://www.php-fig.org/psr/psr-17/).
-- Réponses hydratées dans des objets `readonly` typés (`EntreprisePage\ApiClient\Model`).
+- Réponses hydratées dans des objets typés (`EntreprisePage\ApiClient\Model`). PHP 7.4 n'ayant pas de propriétés `readonly`, leurs propriétés publiques sont marquées `@readonly` : PHPStan et Psalm signalent toute modification.
 
 ## Installation
 
@@ -31,15 +31,14 @@ $codes = array_map(
     $client->activites()->search('plombier')->resultats,
 );
 
-$resultats = $client->entreprises()->search(new RechercheEntrepriseQuery(
-    query: '*',
-    activites: $codes,
-    actif: true,
-    latitude: 45.7672724,
-    longitude: 4.8340594,
-    rayon: 10,
-    parPage: 50,
-));
+// Les critères sont immuables : chaque with…() renvoie une copie.
+$resultats = $client->entreprises()->search(
+    RechercheEntrepriseQuery::create('*')
+        ->withActivites($codes)
+        ->withActif(true)
+        ->withZone(45.7672724, 4.8340594, 10)
+        ->withParPage(50)
+);
 ```
 
 | Méthode | Endpoint | Clé d'API |
@@ -92,5 +91,7 @@ composer install
 composer test
 composer phpstan
 ```
+
+`composer phpstan` vérifie `src` et `bin` pour toute la plage PHP 7.4 à 8.5, quelle que soit la version de PHP locale. Les tests tournent sous PHPUnit 9 en PHP 7.4 et sous PHPUnit 11 en PHP 8.2+ : ils n'utilisent ni arguments nommés ni syntaxe PHP 8, et déclarent leurs data providers à la fois en annotation et en attribut.
 
 Les modèles de `src/Model` sont générés depuis le swagger : après une modification des DTO Go et un `swag init`, lancer `composer generate`. Le test `GeneratedModelsTest` échoue tant que les modèles ne sont pas à jour. Les endpoints (`src/Api`) sont écrits à la main, car le swagger ne décrit pas toujours fidèlement les réponses (par exemple `/organisation/recherche` y est annoncé comme une liste alors que l'API renvoie un objet).

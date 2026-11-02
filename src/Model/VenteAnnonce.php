@@ -9,27 +9,55 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class VenteAnnonce
+final class VenteAnnonce
 {
+    /**
+     * Exemple : "Vente"
+     *
+     * @readonly
+     */
+    public ?string $categorie;
+
+    /**
+     * Exemple : "2020-06-20"
+     *
+     * @readonly
+     */
+    public ?string $dateEffet;
+
+    /**
+     * Exemple : "2020-06-22"
+     *
+     * @readonly
+     */
+    public ?string $datePublicite;
+
+    /**
+     * @var list<string>
+     * @readonly
+     */
+    public array $oppositions;
+
+    /**
+     * @readonly
+     */
+    public ?string $publiciteLegale;
+
+    /**
+     * @param list<string> $oppositions
+     */
     public function __construct(
-        /**
-         * Exemple : "Vente"
-         */
-        public ?string $categorie,
-        /**
-         * Exemple : "2020-06-20"
-         */
-        public ?string $dateEffet,
-        /**
-         * Exemple : "2020-06-22"
-         */
-        public ?string $datePublicite,
-        /**
-         * @var list<string>
-         */
-        public array $oppositions,
-        public ?string $publiciteLegale,
+        ?string $categorie,
+        ?string $dateEffet,
+        ?string $datePublicite,
+        array $oppositions,
+        ?string $publiciteLegale
     ) {
+        $this->categorie = $categorie;
+        $this->dateEffet = $dateEffet;
+        $this->datePublicite = $datePublicite;
+        $this->oppositions = $oppositions;
+        $this->publiciteLegale = $publiciteLegale;
     }
 
     /**
@@ -38,11 +66,11 @@ final readonly class VenteAnnonce
     public static function fromArray(array $data): self
     {
         return new self(
-            categorie: Data::nullableString($data, 'categorie'),
-            dateEffet: Data::nullableString($data, 'date_effet'),
-            datePublicite: Data::nullableString($data, 'date_publicite'),
-            oppositions: Data::stringList($data, 'oppositions'),
-            publiciteLegale: Data::nullableString($data, 'publicite_legale'),
+            Data::nullableString($data, 'categorie'),
+            Data::nullableString($data, 'date_effet'),
+            Data::nullableString($data, 'date_publicite'),
+            Data::stringList($data, 'oppositions'),
+            Data::nullableString($data, 'publicite_legale'),
         );
     }
 }

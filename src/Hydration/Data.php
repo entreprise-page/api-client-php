@@ -24,7 +24,11 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        return \is_string($value) ? $value : throw self::invalid($key, 'string', $value);
+        if (!(\is_string($value))) {
+            throw self::invalid($key, 'string', $value);
+        }
+
+        return $value;
     }
 
     /**
@@ -42,7 +46,11 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        return \is_int($value) ? $value : throw self::invalid($key, 'int', $value);
+        if (!(\is_int($value))) {
+            throw self::invalid($key, 'int', $value);
+        }
+
+        return $value;
     }
 
     /**
@@ -60,7 +68,11 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        return \is_int($value) || \is_float($value) ? (float) $value : throw self::invalid($key, 'float', $value);
+        if (!(\is_int($value) || \is_float($value))) {
+            throw self::invalid($key, 'float', $value);
+        }
+
+        return (float) $value;
     }
 
     /**
@@ -78,7 +90,11 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        return \is_bool($value) ? $value : throw self::invalid($key, 'bool', $value);
+        if (!(\is_bool($value))) {
+            throw self::invalid($key, 'bool', $value);
+        }
+
+        return $value;
     }
 
     /**
@@ -101,7 +117,11 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        return \is_array($value) ? $factory($value) : throw self::invalid($key, 'object', $value);
+        if (!(\is_array($value))) {
+            throw self::invalid($key, 'object', $value);
+        }
+
+        return $factory($value);
     }
 
     /**
@@ -128,7 +148,13 @@ final class Data
     public static function objectList(array $data, string $key, callable $factory): array
     {
         return array_map(
-            static fn (mixed $item): object => \is_array($item) ? $factory($item) : throw self::invalid($key.'[]', 'object', $item),
+            static function ($item) use ($key, $factory): object {
+                if (!\is_array($item)) {
+                    throw self::invalid($key.'[]', 'object', $item);
+                }
+
+                return $factory($item);
+            },
             self::list($data, $key),
         );
     }
@@ -141,7 +167,13 @@ final class Data
     public static function stringList(array $data, string $key): array
     {
         return array_map(
-            static fn (mixed $item): string => \is_string($item) ? $item : throw self::invalid($key.'[]', 'string', $item),
+            static function ($item) use ($key): string {
+                if (!\is_string($item)) {
+                    throw self::invalid($key.'[]', 'string', $item);
+                }
+
+                return $item;
+            },
             self::list($data, $key),
         );
     }
@@ -159,7 +191,11 @@ final class Data
             throw new UnexpectedResponseException('La réponse de l\'API n\'est pas un JSON valide : '.$e->getMessage(), 0, $e);
         }
 
-        return \is_array($decoded) ? $decoded : throw self::invalid('(racine)', 'object ou liste', $decoded);
+        if (!\is_array($decoded)) {
+            throw self::invalid('(racine)', 'object ou liste', $decoded);
+        }
+
+        return $decoded;
     }
 
     /**
@@ -186,16 +222,23 @@ final class Data
     {
         $value = $data[$key] ?? [];
 
-        return \is_array($value) && array_is_list($value) ? $value : throw self::invalid($key, 'list', $value);
+        if (!\is_array($value) || array_values($value) !== $value) {
+            throw self::invalid($key, 'list', $value);
+        }
+
+        return $value;
     }
 
-    private static function invalid(string $key, string $expected, mixed $value): UnexpectedResponseException
+    /**
+     * @param mixed $value
+     */
+    private static function invalid(string $key, string $expected, $value): UnexpectedResponseException
     {
         return new UnexpectedResponseException(\sprintf(
             'Le champ "%s" devrait être de type %s, %s reçu.',
             $key,
             $expected,
-            get_debug_type($value),
+            null === $value ? 'null' : (\is_object($value) ? \get_class($value) : \gettype($value)),
         ));
     }
 }

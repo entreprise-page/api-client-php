@@ -29,7 +29,7 @@ final class Client
     public const DEFAULT_BASE_URI = 'https://api.entreprise.page/v1';
     public const USER_AGENT = 'entreprise-page-api-client-php';
 
-    private readonly Transport $transport;
+    private Transport $transport;
 
     private ?EntrepriseApi $entreprises = null;
     private ?EtablissementApi $etablissements = null;
@@ -47,7 +47,7 @@ final class Client
         ?ClientInterface $httpClient = null,
         ?RequestFactoryInterface $requestFactory = null,
         string $baseUri = self::DEFAULT_BASE_URI,
-        string $userAgent = self::USER_AGENT,
+        string $userAgent = self::USER_AGENT
     ) {
         $this->transport = new Transport(
             $httpClient ?? Psr18ClientDiscovery::find(),

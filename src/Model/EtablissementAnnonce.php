@@ -9,27 +9,53 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class EtablissementAnnonce
+final class EtablissementAnnonce
 {
+    /**
+     * Exemple : "restauration rapide"
+     *
+     * @readonly
+     */
+    public ?string $activite;
+
+    /**
+     * @readonly
+     */
+    public ?AdresseAnnonce $adresse;
+
+    /**
+     * Exemple : "Chez Jean"
+     *
+     * @readonly
+     */
+    public ?string $enseigne;
+
+    /**
+     * Exemple : "Création"
+     *
+     * @readonly
+     */
+    public ?string $origineFonds;
+
+    /**
+     * Exemple : "Etablissement principal"
+     *
+     * @readonly
+     */
+    public ?string $qualite;
+
     public function __construct(
-        /**
-         * Exemple : "restauration rapide"
-         */
-        public ?string $activite,
-        public ?AdresseAnnonce $adresse,
-        /**
-         * Exemple : "Chez Jean"
-         */
-        public ?string $enseigne,
-        /**
-         * Exemple : "Création"
-         */
-        public ?string $origineFonds,
-        /**
-         * Exemple : "Etablissement principal"
-         */
-        public ?string $qualite,
+        ?string $activite,
+        ?AdresseAnnonce $adresse,
+        ?string $enseigne,
+        ?string $origineFonds,
+        ?string $qualite
     ) {
+        $this->activite = $activite;
+        $this->adresse = $adresse;
+        $this->enseigne = $enseigne;
+        $this->origineFonds = $origineFonds;
+        $this->qualite = $qualite;
     }
 
     /**
@@ -38,11 +64,11 @@ final readonly class EtablissementAnnonce
     public static function fromArray(array $data): self
     {
         return new self(
-            activite: Data::nullableString($data, 'activite'),
-            adresse: Data::nullableObject($data, 'adresse', AdresseAnnonce::fromArray(...)),
-            enseigne: Data::nullableString($data, 'enseigne'),
-            origineFonds: Data::nullableString($data, 'origine_fonds'),
-            qualite: Data::nullableString($data, 'qualite'),
+            Data::nullableString($data, 'activite'),
+            Data::nullableObject($data, 'adresse', [AdresseAnnonce::class, 'fromArray']),
+            Data::nullableString($data, 'enseigne'),
+            Data::nullableString($data, 'origine_fonds'),
+            Data::nullableString($data, 'qualite'),
         );
     }
 }

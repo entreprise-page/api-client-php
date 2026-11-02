@@ -9,32 +9,57 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Meta
+final class Meta
 {
+    /**
+     * toto: ajouter l'annee de la categorie
+     * Exemple : "PME"
+     *
+     * @readonly
+     */
+    public string $categorieEntreprise;
+
+    /**
+     * Exemple : true
+     *
+     * @readonly
+     */
+    public bool $estActif;
+
+    /**
+     * Exemple : true
+     *
+     * @readonly
+     */
+    public bool $estDiffusable;
+
+    /**
+     * Exemple : "google-france-443061841"
+     *
+     * @readonly
+     */
+    public string $slug;
+
+    /**
+     * todo: compter uniquement les actifs
+     * Exemple : 15
+     *
+     * @readonly
+     */
+    public int $totalEtablissementActif;
+
     public function __construct(
-        /**
-         * toto: ajouter l'annee de la categorie
-         * Exemple : "PME"
-         */
-        public string $categorieEntreprise,
-        /**
-         * Exemple : true
-         */
-        public bool $estActif,
-        /**
-         * Exemple : true
-         */
-        public bool $estDiffusable,
-        /**
-         * Exemple : "google-france-443061841"
-         */
-        public string $slug,
-        /**
-         * todo: compter uniquement les actifs
-         * Exemple : 15
-         */
-        public int $totalEtablissementActif,
+        string $categorieEntreprise,
+        bool $estActif,
+        bool $estDiffusable,
+        string $slug,
+        int $totalEtablissementActif
     ) {
+        $this->categorieEntreprise = $categorieEntreprise;
+        $this->estActif = $estActif;
+        $this->estDiffusable = $estDiffusable;
+        $this->slug = $slug;
+        $this->totalEtablissementActif = $totalEtablissementActif;
     }
 
     /**
@@ -43,11 +68,11 @@ final readonly class Meta
     public static function fromArray(array $data): self
     {
         return new self(
-            categorieEntreprise: Data::string($data, 'categorie_entreprise'),
-            estActif: Data::bool($data, 'est_actif'),
-            estDiffusable: Data::bool($data, 'est_diffusable'),
-            slug: Data::string($data, 'slug'),
-            totalEtablissementActif: Data::int($data, 'total_etablissement_actif'),
+            Data::string($data, 'categorie_entreprise'),
+            Data::bool($data, 'est_actif'),
+            Data::bool($data, 'est_diffusable'),
+            Data::string($data, 'slug'),
+            Data::int($data, 'total_etablissement_actif'),
         );
     }
 }

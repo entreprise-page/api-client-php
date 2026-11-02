@@ -9,26 +9,46 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class PersonnePhysique
+final class PersonnePhysique
 {
+    /**
+     * Exemple : "1980-01"
+     *
+     * @readonly
+     */
+    public ?string $dateNaissance;
+
+    /**
+     * Exemple : "Dupont"
+     *
+     * @readonly
+     */
+    public string $nom;
+
+    /**
+     * Exemple : "Pierre"
+     *
+     * @readonly
+     */
+    public ?string $prenom;
+
+    /**
+     * Exemple : "Chef d'entreprise"
+     *
+     * @readonly
+     */
+    public ?string $role;
+
     public function __construct(
-        /**
-         * Exemple : "1980-01"
-         */
-        public ?string $dateNaissance,
-        /**
-         * Exemple : "Dupont"
-         */
-        public string $nom,
-        /**
-         * Exemple : "Pierre"
-         */
-        public ?string $prenom,
-        /**
-         * Exemple : "Chef d'entreprise"
-         */
-        public ?string $role,
+        ?string $dateNaissance,
+        string $nom,
+        ?string $prenom,
+        ?string $role
     ) {
+        $this->dateNaissance = $dateNaissance;
+        $this->nom = $nom;
+        $this->prenom = $prenom;
+        $this->role = $role;
     }
 
     /**
@@ -37,10 +57,10 @@ final readonly class PersonnePhysique
     public static function fromArray(array $data): self
     {
         return new self(
-            dateNaissance: Data::nullableString($data, 'date_naissance'),
-            nom: Data::string($data, 'nom'),
-            prenom: Data::nullableString($data, 'prenom'),
-            role: Data::nullableString($data, 'role'),
+            Data::nullableString($data, 'date_naissance'),
+            Data::string($data, 'nom'),
+            Data::nullableString($data, 'prenom'),
+            Data::nullableString($data, 'role'),
         );
     }
 }

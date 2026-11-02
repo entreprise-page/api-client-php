@@ -9,18 +9,30 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Dirigeant
+final class Dirigeant
 {
+    /**
+     * @var list<PersonneMorale>
+     * @readonly
+     */
+    public array $personneMorale;
+
+    /**
+     * @var list<PersonnePhysique>
+     * @readonly
+     */
+    public array $personnePhysique;
+
+    /**
+     * @param list<PersonneMorale> $personneMorale
+     * @param list<PersonnePhysique> $personnePhysique
+     */
     public function __construct(
-        /**
-         * @var list<PersonneMorale>
-         */
-        public array $personneMorale,
-        /**
-         * @var list<PersonnePhysique>
-         */
-        public array $personnePhysique,
+        array $personneMorale,
+        array $personnePhysique
     ) {
+        $this->personneMorale = $personneMorale;
+        $this->personnePhysique = $personnePhysique;
     }
 
     /**
@@ -29,8 +41,8 @@ final readonly class Dirigeant
     public static function fromArray(array $data): self
     {
         return new self(
-            personneMorale: Data::objectList($data, 'personne_morale', PersonneMorale::fromArray(...)),
-            personnePhysique: Data::objectList($data, 'personne_physique', PersonnePhysique::fromArray(...)),
+            Data::objectList($data, 'personne_morale', [PersonneMorale::class, 'fromArray']),
+            Data::objectList($data, 'personne_physique', [PersonnePhysique::class, 'fromArray']),
         );
     }
 }

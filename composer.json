@@ -1,11 +1,17 @@
 {
     "name": "entreprise-page/api-client",
-    "description": "Client PHP de l'API entreprise.page, basé sur PSR-18 et PSR-17",
+    "description": "Client PHP (7.4+) de l'API entreprise.page, basé sur PSR-18 et PSR-17",
     "type": "library",
     "license": "proprietary",
-    "keywords": ["entreprise.page", "siren", "siret", "api", "psr-18"],
+    "keywords": [
+        "entreprise.page",
+        "siren",
+        "siret",
+        "api",
+        "psr-18"
+    ],
     "require": {
-        "php": ">=8.2",
+        "php": ">=7.4",
         "ext-json": "*",
         "php-http/discovery": "^1.19",
         "psr/http-client": "^1.0",
@@ -17,8 +23,8 @@
     "require-dev": {
         "nyholm/psr7": "^1.8",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^11.5",
-        "symfony/http-client": "^7.4"
+        "phpunit/phpunit": "^9.6 || ^11.5",
+        "symfony/http-client": "^5.4 || ^6.4 || ^7.4"
     },
     "suggest": {
         "symfony/http-client": "Implémentation PSR-18 recommandée dans une application Symfony"
@@ -36,7 +42,10 @@
     "scripts": {
         "generate": "php bin/generate-models.php ../../../api/docs/swagger.json src/Model",
         "test": "phpunit",
-        "phpstan": "phpstan analyse"
+        "phpstan": [
+            "phpstan analyse",
+            "phpstan analyse -c phpstan-tests.neon.dist"
+        ]
     },
     "config": {
         "allow-plugins": {

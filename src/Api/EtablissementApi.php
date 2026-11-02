@@ -9,13 +9,16 @@ use EntreprisePage\ApiClient\Hydration\Data;
 use EntreprisePage\ApiClient\Model\Etablissement;
 use EntreprisePage\ApiClient\Query\EtablissementsQuery;
 
-final readonly class EtablissementApi
+final class EtablissementApi
 {
     /**
      * @internal utiliser Client::etablissements()
      */
-    public function __construct(private Transport $transport)
+    private Transport $transport;
+
+    public function __construct(Transport $transport)
     {
+        $this->transport = $transport;
     }
 
     /**
@@ -34,8 +37,8 @@ final readonly class EtablissementApi
     public function listBySiren(string $siren, ?EtablissementsQuery $filtres = null): array
     {
         return Data::mapList(
-            $this->transport->get('/organisation/entreprise/'.Transport::segment($siren).'/etablissement', $filtres?->toQuery() ?? []),
-            Etablissement::fromArray(...),
+            $this->transport->get('/organisation/entreprise/'.Transport::segment($siren).'/etablissement', null !== $filtres ? $filtres->toQuery() : []),
+            [Etablissement::class, 'fromArray'],
         );
     }
 }

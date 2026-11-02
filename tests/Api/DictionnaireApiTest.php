@@ -13,7 +13,7 @@ final class DictionnaireApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('recherche_activite.json');
 
-        $resultat = $this->client->activites()->search(new RechercheActiviteQuery('plombier', 'Construction', 1, 2));
+        $resultat = $this->client->activites()->search(RechercheActiviteQuery::create('plombier')->withSection('Construction')->withPage(1)->withParPage(2));
 
         self::assertSame('/v1/dictionnaire/recherche/activite', $this->http->lastRequest()->getUri()->getPath());
         self::assertSame(['query' => 'plombier', 'section' => 'Construction', 'page' => '1', 'par_page' => '2'], $this->lastQuery());

@@ -37,7 +37,7 @@ final class ClientTest extends ApiTestCase
     {
         $http = (new FakeHttpClient())->willRespond(200, '[]');
 
-        (new Client(httpClient: $http, requestFactory: new Psr17Factory()))->entreprises()->suggest('google');
+        (new Client(null, $http, new Psr17Factory()))->entreprises()->suggest('google');
 
         self::assertFalse($http->lastRequest()->hasHeader('X-API-Key'));
         self::assertSame('https://api.entreprise.page/v1/organisation/suggestion?query=google', (string) $http->lastRequest()->getUri());
@@ -49,13 +49,15 @@ final class ClientTest extends ApiTestCase
 
         try {
             $this->client->entreprises()->get('../quota?x=1');
-        } catch (NotFoundException) {
+        } catch (NotFoundException $e) {
         }
 
         self::assertSame('/v1/organisation/entreprise/..%2Fquota%3Fx%3D1', $this->http->lastRequest()->getUri()->getPath());
     }
 
     /**
+     * @dataProvider erreurs
+     *
      * @param class-string<ApiException> $exception
      */
     #[DataProvider('erreurs')]

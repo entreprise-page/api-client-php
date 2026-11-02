@@ -1,6 +1,9 @@
+# Code livré aux utilisateurs : vérifié pour toutes les versions de PHP supportées.
 parameters:
     level: max
+    phpVersion:
+        min: 70400
+        max: 80599
     paths:
         - src
-        - tests
         - bin

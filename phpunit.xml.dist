@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
-         bootstrap="vendor/autoload.php"
-         cacheDirectory=".phpunit.cache"
+<!-- Compatible PHPUnit 9 (PHP 7.4) et PHPUnit 11 : pas de schéma ni d'élément propre à une version. -->
+<phpunit bootstrap="vendor/autoload.php"
          colors="true"
          failOnRisky="true"
          failOnWarning="true">
@@ -11,9 +9,4 @@
             <directory>tests</directory>
         </testsuite>
     </testsuites>
-    <source>
-        <include>
-            <directory>src</directory>
-        </include>
-    </source>
 </phpunit>

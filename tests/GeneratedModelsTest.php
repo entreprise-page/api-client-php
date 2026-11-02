@@ -31,7 +31,7 @@ final class GeneratedModelsTest extends TestCase
                 self::assertSame($content, file_get_contents(__DIR__.'/../src/Model/'.$file), "{$file} n'est pas à jour : lancer `composer generate`.");
             }
         } finally {
-            array_map(unlink(...), glob($output.'/*.php') ?: []);
+            array_map('unlink', glob($output.'/*.php') ?: []);
             rmdir($output);
         }
     }

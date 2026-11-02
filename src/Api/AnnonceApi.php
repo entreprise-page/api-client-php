@@ -8,13 +8,16 @@ use EntreprisePage\ApiClient\Http\Transport;
 use EntreprisePage\ApiClient\Hydration\Data;
 use EntreprisePage\ApiClient\Model\Annonce;
 
-final readonly class AnnonceApi
+final class AnnonceApi
 {
     /**
      * @internal utiliser Client::annonces()
      */
-    public function __construct(private Transport $transport)
+    private Transport $transport;
+
+    public function __construct(Transport $transport)
     {
+        $this->transport = $transport;
     }
 
     /**
@@ -27,7 +30,7 @@ final readonly class AnnonceApi
     {
         return Data::mapList(
             $this->transport->get('/organisation/entreprise/'.Transport::segment($siren).'/annonce'),
-            Annonce::fromArray(...),
+            [Annonce::class, 'fromArray'],
         );
     }
 }

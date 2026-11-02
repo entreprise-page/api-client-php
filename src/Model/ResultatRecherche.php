@@ -9,66 +9,170 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class ResultatRecherche
+final class ResultatRecherche
 {
+    /**
+     * Exemple : "443061841"
+     *
+     * @readonly
+     */
+    public string $siren;
+
+    /**
+     * Exemple : "Google France"
+     *
+     * @readonly
+     */
+    public ?string $denominationSociale;
+
+    /**
+     * @readonly
+     */
+    public Activite $activitePrincipaleExercee;
+
+    /**
+     * Exemple : 1000000
+     *
+     * @readonly
+     */
+    public ?float $capitalSocial;
+
+    /**
+     * @var list<Convention>
+     * @readonly
+     */
+    public array $conventions;
+
+    /**
+     * Exemple : "2006-02-08"
+     *
+     * @readonly
+     */
+    public ?string $dateCessation;
+
+    /**
+     * Exemple : "2002-05-16"
+     *
+     * @readonly
+     */
+    public ?string $dateCreation;
+
+    /**
+     * @readonly
+     */
+    public Dirigeant $dirigeant;
+
+    /**
+     * Distance en mètres entre le point de recherche et l'établissement le plus proche, absente hors recherche géographique.
+     * Exemple : 4200
+     *
+     * @readonly
+     */
+    public ?int $distanceMetres;
+
+    /**
+     * @readonly
+     */
+    public Effectif $effectif;
+
+    /**
+     * Établissement actif le plus proche du point de recherche, celui qui a fait ressortir l'entreprise : ce n'est pas forcément le siège social.
+     *
+     * @readonly
+     */
+    public ?Etablissement $etablissementLePlusProche;
+
+    /**
+     * @var list<Finance>
+     * @readonly
+     */
+    public array $finances;
+
+    /**
+     * @readonly
+     */
+    public FormeJuridique $formeJuridique;
+
+    /**
+     * Exemple : "Paris"
+     *
+     * @readonly
+     */
+    public ?string $greffe;
+
+    /**
+     * Exemple : "W751017910"
+     *
+     * @readonly
+     */
+    public ?string $identifiantAssociation;
+
+    /**
+     * @readonly
+     */
+    public Meta $meta;
+
+    /**
+     * Exemple : "FR64443061841"
+     *
+     * @readonly
+     */
+    public string $numeroTva;
+
+    /**
+     * @readonly
+     */
+    public Registre $registre;
+
+    /**
+     * @readonly
+     */
+    public ?Etablissement $siegeSocial;
+
+    /**
+     * @param list<Convention> $conventions
+     * @param list<Finance> $finances
+     */
     public function __construct(
-        /**
-         * Exemple : "443061841"
-         */
-        public string $siren,
-        /**
-         * Exemple : "Google France"
-         */
-        public ?string $denominationSociale,
-        public Activite $activitePrincipaleExercee,
-        /**
-         * Exemple : 1000000
-         */
-        public ?float $capitalSocial,
-        /**
-         * @var list<Convention>
-         */
-        public array $conventions,
-        /**
-         * Exemple : "2006-02-08"
-         */
-        public ?string $dateCessation,
-        /**
-         * Exemple : "2002-05-16"
-         */
-        public ?string $dateCreation,
-        public Dirigeant $dirigeant,
-        /**
-         * Distance en mètres entre le point de recherche et l'établissement le plus proche, absente hors recherche géographique.
-         * Exemple : 4200
-         */
-        public ?int $distanceMetres,
-        public Effectif $effectif,
-        /**
-         * Établissement actif le plus proche du point de recherche, celui qui a fait ressortir l'entreprise : ce n'est pas forcément le siège social.
-         */
-        public ?Etablissement $etablissementLePlusProche,
-        /**
-         * @var list<Finance>
-         */
-        public array $finances,
-        public FormeJuridique $formeJuridique,
-        /**
-         * Exemple : "Paris"
-         */
-        public ?string $greffe,
-        /**
-         * Exemple : "W751017910"
-         */
-        public ?string $identifiantAssociation,
-        public Meta $meta,
-        /**
-         * Exemple : "FR64443061841"
-         */
-        public string $numeroTva,
-        public Registre $registre,
-        public ?Etablissement $siegeSocial,
+        string $siren,
+        ?string $denominationSociale,
+        Activite $activitePrincipaleExercee,
+        ?float $capitalSocial,
+        array $conventions,
+        ?string $dateCessation,
+        ?string $dateCreation,
+        Dirigeant $dirigeant,
+        ?int $distanceMetres,
+        Effectif $effectif,
+        ?Etablissement $etablissementLePlusProche,
+        array $finances,
+        FormeJuridique $formeJuridique,
+        ?string $greffe,
+        ?string $identifiantAssociation,
+        Meta $meta,
+        string $numeroTva,
+        Registre $registre,
+        ?Etablissement $siegeSocial
     ) {
+        $this->siren = $siren;
+        $this->denominationSociale = $denominationSociale;
+        $this->activitePrincipaleExercee = $activitePrincipaleExercee;
+        $this->capitalSocial = $capitalSocial;
+        $this->conventions = $conventions;
+        $this->dateCessation = $dateCessation;
+        $this->dateCreation = $dateCreation;
+        $this->dirigeant = $dirigeant;
+        $this->distanceMetres = $distanceMetres;
+        $this->effectif = $effectif;
+        $this->etablissementLePlusProche = $etablissementLePlusProche;
+        $this->finances = $finances;
+        $this->formeJuridique = $formeJuridique;
+        $this->greffe = $greffe;
+        $this->identifiantAssociation = $identifiantAssociation;
+        $this->meta = $meta;
+        $this->numeroTva = $numeroTva;
+        $this->registre = $registre;
+        $this->siegeSocial = $siegeSocial;
     }
 
     /**
@@ -77,25 +181,25 @@ final readonly class ResultatRecherche
     public static function fromArray(array $data): self
     {
         return new self(
-            siren: Data::string($data, 'siren'),
-            denominationSociale: Data::nullableString($data, 'denomination_sociale'),
-            activitePrincipaleExercee: Data::object($data, 'activite_principale_exercee', Activite::fromArray(...)),
-            capitalSocial: Data::nullableFloat($data, 'capital_social'),
-            conventions: Data::objectList($data, 'conventions', Convention::fromArray(...)),
-            dateCessation: Data::nullableString($data, 'date_cessation'),
-            dateCreation: Data::nullableString($data, 'date_creation'),
-            dirigeant: Data::object($data, 'dirigeant', Dirigeant::fromArray(...)),
-            distanceMetres: Data::nullableInt($data, 'distance_metres'),
-            effectif: Data::object($data, 'effectif', Effectif::fromArray(...)),
-            etablissementLePlusProche: Data::nullableObject($data, 'etablissement_le_plus_proche', Etablissement::fromArray(...)),
-            finances: Data::objectList($data, 'finances', Finance::fromArray(...)),
-            formeJuridique: Data::object($data, 'forme_juridique', FormeJuridique::fromArray(...)),
-            greffe: Data::nullableString($data, 'greffe'),
-            identifiantAssociation: Data::nullableString($data, 'identifiant_association'),
-            meta: Data::object($data, 'meta', Meta::fromArray(...)),
-            numeroTva: Data::string($data, 'numero_tva'),
-            registre: Data::object($data, 'registre', Registre::fromArray(...)),
-            siegeSocial: Data::nullableObject($data, 'siege_social', Etablissement::fromArray(...)),
+            Data::string($data, 'siren'),
+            Data::nullableString($data, 'denomination_sociale'),
+            Data::object($data, 'activite_principale_exercee', [Activite::class, 'fromArray']),
+            Data::nullableFloat($data, 'capital_social'),
+            Data::objectList($data, 'conventions', [Convention::class, 'fromArray']),
+            Data::nullableString($data, 'date_cessation'),
+            Data::nullableString($data, 'date_creation'),
+            Data::object($data, 'dirigeant', [Dirigeant::class, 'fromArray']),
+            Data::nullableInt($data, 'distance_metres'),
+            Data::object($data, 'effectif', [Effectif::class, 'fromArray']),
+            Data::nullableObject($data, 'etablissement_le_plus_proche', [Etablissement::class, 'fromArray']),
+            Data::objectList($data, 'finances', [Finance::class, 'fromArray']),
+            Data::object($data, 'forme_juridique', [FormeJuridique::class, 'fromArray']),
+            Data::nullableString($data, 'greffe'),
+            Data::nullableString($data, 'identifiant_association'),
+            Data::object($data, 'meta', [Meta::class, 'fromArray']),
+            Data::string($data, 'numero_tva'),
+            Data::object($data, 'registre', [Registre::class, 'fromArray']),
+            Data::nullableObject($data, 'siege_social', [Etablissement::class, 'fromArray']),
         );
     }
 }

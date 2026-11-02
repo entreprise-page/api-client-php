@@ -34,13 +34,13 @@ if (!is_array($swagger) || !is_array($swagger['definitions'] ?? null)) {
     exit(1);
 }
 
-if (!is_dir($outputDir) && !mkdir($outputDir, 0o777, true)) {
+if (!is_dir($outputDir) && !mkdir($outputDir, 0777, true)) {
     fwrite(\STDERR, "Impossible de créer {$outputDir}\n");
     exit(1);
 }
 
 foreach (glob($outputDir.'/*.php') ?: [] as $existing) {
-    if (str_contains((string) file_get_contents($existing), MARKER)) {
+    if (false !== strpos((string) file_get_contents($existing), MARKER)) {
         unlink($existing);
     }
 }
@@ -56,11 +56,17 @@ function className(string $definition): string
 }
 
 /**
+ * @param mixed $value
+ *
  * @return array<mixed>
  */
-function schema(mixed $value, string $context): array
+function schema($value, string $context): array
 {
-    return is_array($value) ? $value : throw new RuntimeException("Schéma invalide pour {$context}");
+    if (!is_array($value)) {
+        throw new RuntimeException("Schéma invalide pour {$context}");
+    }
+
+    return $value;
 }
 
 function camelCase(string $snake): string
@@ -83,7 +89,7 @@ function resolveType(array $schema, string $key, bool $nullable): array
         return [
             'php' => ($nullable ? '?' : '').$class,
             'doc' => null,
-            'read' => sprintf('Data::%s($data, \'%s\', %s::fromArray(...))', $nullable ? 'nullableObject' : 'object', $key, $class),
+            'read' => sprintf('Data::%s($data, \'%s\', [%s::class, \'fromArray\'])', $nullable ? 'nullableObject' : 'object', $key, $class),
         ];
     }
 
@@ -94,7 +100,7 @@ function resolveType(array $schema, string $key, bool $nullable): array
         if (is_string($itemRef)) {
             $class = className(substr($itemRef, strlen('#/definitions/')));
 
-            return ['php' => 'array', 'doc' => "list<{$class}>", 'read' => sprintf('Data::objectList($data, \'%s\', %s::fromArray(...))', $key, $class)];
+            return ['php' => 'array', 'doc' => "list<{$class}>", 'read' => sprintf('Data::objectList($data, \'%s\', [%s::class, \'fromArray\'])', $key, $class)];
         }
         if ('string' === ($items['type'] ?? null)) {
             return ['php' => 'array', 'doc' => 'list<string>', 'read' => sprintf('Data::stringList($data, \'%s\')', $key)];
@@ -103,13 +109,16 @@ function resolveType(array $schema, string $key, bool $nullable): array
         throw new RuntimeException("Type de liste non géré pour {$key}");
     }
 
-    [$php, $reader] = match ($type) {
+    $scalars = [
         'string' => ['string', 'String'],
         'integer' => ['int', 'Int'],
         'number' => ['float', 'Float'],
         'boolean' => ['bool', 'Bool'],
-        default => throw new RuntimeException(sprintf('Type "%s" non géré pour %s', var_export($type, true), $key)),
-    };
+    ];
+    if (!is_string($type) || !isset($scalars[$type])) {
+        throw new RuntimeException(sprintf('Type "%s" non géré pour %s', var_export($type, true), $key));
+    }
+    [$php, $reader] = $scalars[$type];
 
     return [
         'php' => ($nullable ? '?' : '').$php,
@@ -132,15 +141,20 @@ function renderClass(string $class, array $definition): string
     $order = static fn (string $key): ?int => is_numeric($properties[$key]['x-order'] ?? null) ? (int) $properties[$key]['x-order'] : null;
     $keys = array_keys($properties);
     usort($keys, static function (string $a, string $b) use ($order): int {
-        return match (true) {
-            null !== $order($a) && null !== $order($b) => $order($a) <=> $order($b),
-            null !== $order($a) => -1,
-            null !== $order($b) => 1,
-            default => strcmp($a, $b),
-        };
+        if (null !== $order($a) && null !== $order($b)) {
+            return $order($a) <=> $order($b);
+        }
+        if (null !== $order($a) || null !== $order($b)) {
+            return null !== $order($a) ? -1 : 1;
+        }
+
+        return strcmp($a, $b);
     });
 
+    $declarations = [];
     $params = [];
+    $paramDocs = [];
+    $assignments = [];
     $reads = [];
     foreach ($keys as $key) {
         $schema = $properties[$key];
@@ -155,22 +169,28 @@ function renderClass(string $class, array $definition): string
         if (array_key_exists('example', $schema)) {
             $doc[] = 'Exemple : '.json_encode($schema['example'], \JSON_UNESCAPED_UNICODE | \JSON_UNESCAPED_SLASHES);
         }
+        if ([] !== $doc) {
+            $doc[] = '';
+        }
         if (null !== $type['doc']) {
             $doc[] = "@var {$type['doc']}";
+            $paramDocs[] = "     * @param {$type['doc']} \${$property}";
         }
+        // PHP 7.4 n'a pas de propriétés readonly : PHPStan vérifie @readonly à la place.
+        $doc[] = '@readonly';
 
-        $param = '';
-        if ([] !== $doc) {
-            $param .= "        /**\n".implode('', array_map(static fn (string $line): string => "         * {$line}\n", $doc))."         */\n";
-        }
-        $param .= "        public {$type['php']} \${$property},";
-        $params[] = $param;
-        $reads[] = "            {$property}: {$type['read']},";
+        $declarations[] = "    /**\n".implode('', array_map(static fn (string $line): string => '' === $line ? "     *\n" : "     * {$line}\n", $doc))."     */\n    public {$type['php']} \${$property};";
+        $params[] = "        {$type['php']} \${$property}";
+        $assignments[] = "        \$this->{$property} = \${$property};";
+        $reads[] = "            {$type['read']},";
     }
 
     $marker = MARKER;
     $namespace = NAMESPACE_MODEL;
-    $paramsCode = implode("\n", $params);
+    $declarationsCode = implode("\n\n", $declarations);
+    $constructorDoc = [] === $paramDocs ? '' : "    /**\n".implode("\n", $paramDocs)."\n     */\n";
+    $paramsCode = implode(",\n", $params);
+    $assignmentsCode = implode("\n", $assignments);
     $readsCode = implode("\n", $reads);
     $description = is_string($definition['description'] ?? null) ? ' * '.trim($definition['description'])."\n *\n" : '';
 
@@ -186,11 +206,14 @@ function renderClass(string $class, array $definition): string
         /**
         {$description} * {$marker} depuis api/docs/swagger.json, ne pas modifier à la main.
          */
-        final readonly class {$class}
+        final class {$class}
         {
-            public function __construct(
+        {$declarationsCode}
+
+        {$constructorDoc}    public function __construct(
         {$paramsCode}
             ) {
+        {$assignmentsCode}
             }
 
             /**

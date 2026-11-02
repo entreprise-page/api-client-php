@@ -9,23 +9,44 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class JugementAnnonce
+final class JugementAnnonce
 {
+    /**
+     * @readonly
+     */
+    public ?string $complement;
+
+    /**
+     * Exemple : "2020-06-18"
+     *
+     * @readonly
+     */
+    public ?string $date;
+
+    /**
+     * Exemple : "Jugement d'ouverture"
+     *
+     * @readonly
+     */
+    public string $famille;
+
+    /**
+     * Exemple : "Liquidation judiciaire"
+     *
+     * @readonly
+     */
+    public string $nature;
+
     public function __construct(
-        public ?string $complement,
-        /**
-         * Exemple : "2020-06-18"
-         */
-        public ?string $date,
-        /**
-         * Exemple : "Jugement d'ouverture"
-         */
-        public string $famille,
-        /**
-         * Exemple : "Liquidation judiciaire"
-         */
-        public string $nature,
+        ?string $complement,
+        ?string $date,
+        string $famille,
+        string $nature
     ) {
+        $this->complement = $complement;
+        $this->date = $date;
+        $this->famille = $famille;
+        $this->nature = $nature;
     }
 
     /**
@@ -34,10 +55,10 @@ final readonly class JugementAnnonce
     public static function fromArray(array $data): self
     {
         return new self(
-            complement: Data::nullableString($data, 'complement'),
-            date: Data::nullableString($data, 'date'),
-            famille: Data::string($data, 'famille'),
-            nature: Data::string($data, 'nature'),
+            Data::nullableString($data, 'complement'),
+            Data::nullableString($data, 'date'),
+            Data::string($data, 'famille'),
+            Data::string($data, 'nature'),
         );
     }
 }

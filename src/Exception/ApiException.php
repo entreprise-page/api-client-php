@@ -11,26 +11,37 @@ use Psr\Http\Message\ResponseInterface;
  */
 class ApiException extends \RuntimeException implements ExceptionInterface
 {
-    public function __construct(
-        string $message,
-        private readonly ResponseInterface $response,
-        ?\Throwable $previous = null,
-    ) {
+    /** @var ResponseInterface */
+    private $response;
+
+    public function __construct(string $message, ResponseInterface $response, ?\Throwable $previous = null)
+    {
         parent::__construct($message, $response->getStatusCode(), $previous);
+        $this->response = $response;
     }
 
     public static function fromResponse(ResponseInterface $response): self
     {
         $message = self::extractMessage($response);
+        $status = $response->getStatusCode();
 
-        return match (true) {
-            400 === $response->getStatusCode() => new BadRequestException($message, $response),
-            401 === $response->getStatusCode(), 403 === $response->getStatusCode() => new UnauthorizedException($message, $response),
-            404 === $response->getStatusCode() => new NotFoundException($message, $response),
-            429 === $response->getStatusCode() => new TooManyRequestsException($message, $response),
-            $response->getStatusCode() >= 500 => new ServerException($message, $response),
-            default => new self($message, $response),
-        };
+        if (400 === $status) {
+            return new BadRequestException($message, $response);
+        }
+        if (401 === $status || 403 === $status) {
+            return new UnauthorizedException($message, $response);
+        }
+        if (404 === $status) {
+            return new NotFoundException($message, $response);
+        }
+        if (429 === $status) {
+            return new TooManyRequestsException($message, $response);
+        }
+        if ($status >= 500) {
+            return new ServerException($message, $response);
+        }
+
+        return new self($message, $response);
     }
 
     public function getStatusCode(): int
@@ -53,14 +64,17 @@ class ApiException extends \RuntimeException implements ExceptionInterface
 
         try {
             $decoded = json_decode($body, true, 512, \JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
+        } catch (\JsonException $e) {
             return '' !== trim($body) ? trim($body) : $fallback;
         }
 
-        return match (true) {
-            \is_string($decoded) && '' !== $decoded => $decoded,
-            \is_array($decoded) && \is_string($decoded['error'] ?? null) => $decoded['error'],
-            default => $fallback,
-        };
+        if (\is_string($decoded) && '' !== $decoded) {
+            return $decoded;
+        }
+        if (\is_array($decoded) && \is_string($decoded['error'] ?? null)) {
+            return $decoded['error'];
+        }
+
+        return $fallback;
     }
 }

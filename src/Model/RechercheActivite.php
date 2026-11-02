@@ -9,17 +9,42 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class RechercheActivite
+final class RechercheActivite
 {
+    /**
+     * @readonly
+     */
+    public int $page;
+
+    /**
+     * @readonly
+     */
+    public int $nombreParPage;
+
+    /**
+     * @readonly
+     */
+    public int $totalResultats;
+
+    /**
+     * @var list<ActiviteTrouvee>
+     * @readonly
+     */
+    public array $resultats;
+
+    /**
+     * @param list<ActiviteTrouvee> $resultats
+     */
     public function __construct(
-        public int $page,
-        public int $nombreParPage,
-        public int $totalResultats,
-        /**
-         * @var list<ActiviteTrouvee>
-         */
-        public array $resultats,
+        int $page,
+        int $nombreParPage,
+        int $totalResultats,
+        array $resultats
     ) {
+        $this->page = $page;
+        $this->nombreParPage = $nombreParPage;
+        $this->totalResultats = $totalResultats;
+        $this->resultats = $resultats;
     }
 
     /**
@@ -28,10 +53,10 @@ final readonly class RechercheActivite
     public static function fromArray(array $data): self
     {
         return new self(
-            page: Data::int($data, 'page'),
-            nombreParPage: Data::int($data, 'nombre_par_page'),
-            totalResultats: Data::int($data, 'total_resultats'),
-            resultats: Data::objectList($data, 'resultats', ActiviteTrouvee::fromArray(...)),
+            Data::int($data, 'page'),
+            Data::int($data, 'nombre_par_page'),
+            Data::int($data, 'total_resultats'),
+            Data::objectList($data, 'resultats', [ActiviteTrouvee::class, 'fromArray']),
         );
     }
 }

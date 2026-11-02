@@ -9,13 +9,31 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Registre
+final class Registre
 {
+    /**
+     * @readonly
+     */
+    public RegistreDate $insee;
+
+    /**
+     * @readonly
+     */
+    public ?RegistreDateCessation $rcs;
+
+    /**
+     * @readonly
+     */
+    public ?RegistreDateCessation $rne;
+
     public function __construct(
-        public RegistreDate $insee,
-        public ?RegistreDateCessation $rcs,
-        public ?RegistreDateCessation $rne,
+        RegistreDate $insee,
+        ?RegistreDateCessation $rcs,
+        ?RegistreDateCessation $rne
     ) {
+        $this->insee = $insee;
+        $this->rcs = $rcs;
+        $this->rne = $rne;
     }
 
     /**
@@ -24,9 +42,9 @@ final readonly class Registre
     public static function fromArray(array $data): self
     {
         return new self(
-            insee: Data::object($data, 'insee', RegistreDate::fromArray(...)),
-            rcs: Data::nullableObject($data, 'rcs', RegistreDateCessation::fromArray(...)),
-            rne: Data::nullableObject($data, 'rne', RegistreDateCessation::fromArray(...)),
+            Data::object($data, 'insee', [RegistreDate::class, 'fromArray']),
+            Data::nullableObject($data, 'rcs', [RegistreDateCessation::class, 'fromArray']),
+            Data::nullableObject($data, 'rne', [RegistreDateCessation::class, 'fromArray']),
         );
     }
 }

@@ -21,8 +21,11 @@ final class EntrepriseApiTest extends ApiTestCase
         self::assertSame(9110, $entreprise->formeJuridique->code);
         self::assertNull($entreprise->formeJuridique->abreviation);
         self::assertNull($entreprise->capitalSocial);
-        self::assertSame('RENNES', $entreprise->siegeSocial?->adresse->commune?->libelle);
-        self::assertSame(48.112573, $entreprise->siegeSocial->adresse->coordonnees?->latitude);
+        self::assertNotNull($entreprise->siegeSocial);
+        self::assertNotNull($entreprise->siegeSocial->adresse->commune);
+        self::assertSame('RENNES', $entreprise->siegeSocial->adresse->commune->libelle);
+        self::assertNotNull($entreprise->siegeSocial->adresse->coordonnees);
+        self::assertSame(48.112573, $entreprise->siegeSocial->adresse->coordonnees->latitude);
         self::assertNull($entreprise->registre->rcs, 'rcs est omis par l\'API quand il est absent');
         self::assertSame([], $entreprise->finances);
     }
@@ -44,17 +47,15 @@ final class EntrepriseApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('recherche_entreprise.json');
 
-        $this->client->entreprises()->search(new RechercheEntrepriseQuery(
-            query: 'plombier',
-            activites: ['43.22A', '43.22B'],
-            categoriesJuridiques: [5499, 5710],
-            actif: false,
-            latitude: 45.7672724,
-            longitude: 4.8340594,
-            rayon: 15,
-            page: 2,
-            parPage: 50,
-        ));
+        $this->client->entreprises()->search(
+            RechercheEntrepriseQuery::create('plombier')
+                ->withActivites(['43.22A', '43.22B'])
+                ->withCategoriesJuridiques([5499, 5710])
+                ->withActif(false)
+                ->withZone(45.7672724, 4.8340594, 15)
+                ->withPage(2)
+                ->withParPage(50)
+        );
 
         self::assertSame([
             'query' => 'plombier',

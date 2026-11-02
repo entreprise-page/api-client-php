@@ -42,14 +42,24 @@ final class FakeHttpClient implements ClientInterface
 
     public function lastRequest(): RequestInterface
     {
-        return $this->requests[\count($this->requests) - 1] ?? throw new \LogicException('Aucune requête envoyée.');
+        if ([] === $this->requests) {
+            throw new \LogicException('Aucune requête envoyée.');
+        }
+
+        return $this->requests[\count($this->requests) - 1];
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $this->requests[] = $request;
-        $next = array_shift($this->queue) ?? throw new \LogicException('Aucune réponse préparée pour '.$request->getUri());
+        $next = array_shift($this->queue);
+        if (null === $next) {
+            throw new \LogicException('Aucune réponse préparée pour '.$request->getUri());
+        }
+        if (!$next instanceof ResponseInterface) {
+            throw $next;
+        }
 
-        return $next instanceof ResponseInterface ? $next : throw $next;
+        return $next;
     }
 }

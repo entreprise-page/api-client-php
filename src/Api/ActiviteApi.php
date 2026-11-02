@@ -10,13 +10,16 @@ use EntreprisePage\ApiClient\Model\Activite;
 use EntreprisePage\ApiClient\Model\RechercheActivite;
 use EntreprisePage\ApiClient\Query\RechercheActiviteQuery;
 
-final readonly class ActiviteApi
+final class ActiviteApi
 {
     /**
      * @internal utiliser Client::activites()
      */
-    public function __construct(private Transport $transport)
+    private Transport $transport;
+
+    public function __construct(Transport $transport)
     {
+        $this->transport = $transport;
     }
 
     /**
@@ -26,7 +29,7 @@ final readonly class ActiviteApi
      */
     public function list(): array
     {
-        return Data::mapList($this->transport->get('/dictionnaire/activite'), Activite::fromArray(...));
+        return Data::mapList($this->transport->get('/dictionnaire/activite'), [Activite::class, 'fromArray']);
     }
 
     /**
@@ -41,12 +44,14 @@ final readonly class ActiviteApi
 
     /**
      * GET /dictionnaire/recherche/activite — retrouve des codes NAF depuis un terme courant.
-     * Les codes obtenus s'utilisent dans RechercheEntrepriseQuery::$activites.
+     * Les codes obtenus s'utilisent dans RechercheEntrepriseQuery::withActivites().
+     *
+     * @param RechercheActiviteQuery|string $query
      */
-    public function search(RechercheActiviteQuery|string $query): RechercheActivite
+    public function search($query): RechercheActivite
     {
-        if (\is_string($query)) {
-            $query = new RechercheActiviteQuery($query);
+        if (!$query instanceof RechercheActiviteQuery) {
+            $query = RechercheActiviteQuery::create($query);
         }
 
         return RechercheActivite::fromArray($this->transport->get('/dictionnaire/recherche/activite', $query->toQuery()));

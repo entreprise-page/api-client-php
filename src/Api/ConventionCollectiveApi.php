@@ -8,13 +8,16 @@ use EntreprisePage\ApiClient\Http\Transport;
 use EntreprisePage\ApiClient\Hydration\Data;
 use EntreprisePage\ApiClient\Model\Convention;
 
-final readonly class ConventionCollectiveApi
+final class ConventionCollectiveApi
 {
     /**
      * @internal utiliser Client::conventionsCollectives()
      */
-    public function __construct(private Transport $transport)
+    private Transport $transport;
+
+    public function __construct(Transport $transport)
     {
+        $this->transport = $transport;
     }
 
     /**
@@ -24,7 +27,7 @@ final readonly class ConventionCollectiveApi
      */
     public function list(): array
     {
-        return Data::mapList($this->transport->get('/dictionnaire/convention-collective'), Convention::fromArray(...));
+        return Data::mapList($this->transport->get('/dictionnaire/convention-collective'), [Convention::class, 'fromArray']);
     }
 
     /**

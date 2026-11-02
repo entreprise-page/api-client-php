@@ -9,26 +9,46 @@ use EntreprisePage\ApiClient\Hydration\Data;
 /**
  * Généré par bin/generate-models.php depuis api/docs/swagger.json, ne pas modifier à la main.
  */
-final readonly class Finance
+final class Finance
 {
+    /**
+     * Exemple : 2025
+     *
+     * @readonly
+     */
+    public int $annee;
+
+    /**
+     * Exemple : 568000
+     *
+     * @readonly
+     */
+    public float $chiffreAffaire;
+
+    /**
+     * Exemple : 268000
+     *
+     * @readonly
+     */
+    public float $margeBrut;
+
+    /**
+     * Exemple : 368000
+     *
+     * @readonly
+     */
+    public float $resultatNet;
+
     public function __construct(
-        /**
-         * Exemple : 2025
-         */
-        public int $annee,
-        /**
-         * Exemple : 568000
-         */
-        public float $chiffreAffaire,
-        /**
-         * Exemple : 268000
-         */
-        public float $margeBrut,
-        /**
-         * Exemple : 368000
-         */
-        public float $resultatNet,
+        int $annee,
+        float $chiffreAffaire,
+        float $margeBrut,
+        float $resultatNet
     ) {
+        $this->annee = $annee;
+        $this->chiffreAffaire = $chiffreAffaire;
+        $this->margeBrut = $margeBrut;
+        $this->resultatNet = $resultatNet;
     }
 
     /**
@@ -37,10 +57,10 @@ final readonly class Finance
     public static function fromArray(array $data): self
     {
         return new self(
-            annee: Data::int($data, 'annee'),
-            chiffreAffaire: Data::float($data, 'chiffre_affaire'),
-            margeBrut: Data::float($data, 'marge_brut'),
-            resultatNet: Data::float($data, 'resultat_net'),
+            Data::int($data, 'annee'),
+            Data::float($data, 'chiffre_affaire'),
+            Data::float($data, 'marge_brut'),
+            Data::float($data, 'resultat_net'),
         );
     }
 }
