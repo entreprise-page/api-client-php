@@ -44,6 +44,7 @@ final class ActiviteApi
 
     /**
      * GET /dictionnaire/recherche/activite — retrouve des codes NAF depuis un terme courant.
+     * Nécessite une clé d'API et consomme le quota.
      * Les codes obtenus s'utilisent dans RechercheEntrepriseQuery::withActivites().
      *
      * @param RechercheActiviteQuery|string $query

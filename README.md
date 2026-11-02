@@ -50,7 +50,7 @@ $resultats = $client->entreprises()->search(
 | `etablissements()->listBySiren($siren, $filtres)` | `GET /organisation/entreprise/{siren}/etablissement` | oui |
 | `annonces()->listBySiren($siren)` | `GET /organisation/entreprise/{siren}/annonce` | oui |
 | `activites()->list()` / `get($code)` | `GET /dictionnaire/activite[/{code}]` | non |
-| `activites()->search($query)` | `GET /dictionnaire/recherche/activite` | non |
+| `activites()->search($query)` | `GET /dictionnaire/recherche/activite` | oui |
 | `conventionsCollectives()->list()` / `get($idcc)` | `GET /dictionnaire/convention-collective[/{code}]` | non |
 | `formesJuridiques()->list()` / `get($code)` | `GET /dictionnaire/forme-juridique[/{code}]` | non |
 | `compte()->quota()` | `GET /quota` | oui |
