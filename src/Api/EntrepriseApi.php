@@ -23,7 +23,7 @@ final readonly class EntrepriseApi
     /**
      * GET /organisation/entreprise/{siren} — nécessite une clé d'API.
      */
-    public function recuperer(string $siren): Entreprise
+    public function get(string $siren): Entreprise
     {
         return Entreprise::fromArray($this->transport->get('/organisation/entreprise/'.Transport::segment($siren)));
     }
@@ -31,7 +31,7 @@ final readonly class EntrepriseApi
     /**
      * GET /organisation/recherche — nécessite une clé d'API et consomme le quota.
      */
-    public function rechercher(RechercheEntrepriseQuery|string $query): RechercheEntreprise
+    public function search(RechercheEntrepriseQuery|string $query): RechercheEntreprise
     {
         if (\is_string($query)) {
             $query = new RechercheEntrepriseQuery($query);
@@ -47,7 +47,7 @@ final readonly class EntrepriseApi
      *
      * @return list<Suggestion>
      */
-    public function suggerer(string $query, ?int $limit = null): array
+    public function suggest(string $query, ?int $limit = null): array
     {
         $params = ['query' => $query];
         if (null !== $limit) {

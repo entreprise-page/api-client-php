@@ -23,15 +23,15 @@ use EntreprisePage\ApiClient\Query\RechercheEntrepriseQuery;
 // Le client HTTP et la fabrique de requêtes sont découverts automatiquement s'ils ne sont pas fournis.
 $client = new Client('votre-cle-api');
 
-$entreprise = $client->entreprises()->recuperer('443061841');
+$entreprise = $client->entreprises()->get('443061841');
 echo $entreprise->denominationSociale;
 
 $codes = array_map(
     static fn ($activite) => $activite->code,
-    $client->activites()->rechercher('plombier')->resultats,
+    $client->activites()->search('plombier')->resultats,
 );
 
-$resultats = $client->entreprises()->rechercher(new RechercheEntrepriseQuery(
+$resultats = $client->entreprises()->search(new RechercheEntrepriseQuery(
     query: '*',
     activites: $codes,
     actif: true,
@@ -44,16 +44,16 @@ $resultats = $client->entreprises()->rechercher(new RechercheEntrepriseQuery(
 
 | Méthode | Endpoint | Clé d'API |
 | --- | --- | --- |
-| `entreprises()->recuperer($siren)` | `GET /organisation/entreprise/{siren}` | oui |
-| `entreprises()->rechercher($query)` | `GET /organisation/recherche` | oui |
-| `entreprises()->suggerer($query, $limit)` | `GET /organisation/suggestion` | non |
-| `etablissements()->recuperer($siret)` | `GET /organisation/etablissement/{siret}` | oui |
-| `etablissements()->listerParSiren($siren, $filtres)` | `GET /organisation/entreprise/{siren}/etablissement` | oui |
-| `annonces()->listerParSiren($siren)` | `GET /organisation/entreprise/{siren}/annonce` | oui |
-| `activites()->lister()` / `recuperer($code)` | `GET /dictionnaire/activite[/{code}]` | non |
-| `activites()->rechercher($query)` | `GET /dictionnaire/recherche/activite` | non |
-| `conventionsCollectives()->lister()` / `recuperer($idcc)` | `GET /dictionnaire/convention-collective[/{code}]` | non |
-| `formesJuridiques()->lister()` / `recuperer($code)` | `GET /dictionnaire/forme-juridique[/{code}]` | non |
+| `entreprises()->get($siren)` | `GET /organisation/entreprise/{siren}` | oui |
+| `entreprises()->search($query)` | `GET /organisation/recherche` | oui |
+| `entreprises()->suggest($query, $limit)` | `GET /organisation/suggestion` | non |
+| `etablissements()->get($siret)` | `GET /organisation/etablissement/{siret}` | oui |
+| `etablissements()->listBySiren($siren, $filtres)` | `GET /organisation/entreprise/{siren}/etablissement` | oui |
+| `annonces()->listBySiren($siren)` | `GET /organisation/entreprise/{siren}/annonce` | oui |
+| `activites()->list()` / `get($code)` | `GET /dictionnaire/activite[/{code}]` | non |
+| `activites()->search($query)` | `GET /dictionnaire/recherche/activite` | non |
+| `conventionsCollectives()->list()` / `get($idcc)` | `GET /dictionnaire/convention-collective[/{code}]` | non |
+| `formesJuridiques()->list()` / `get($code)` | `GET /dictionnaire/forme-juridique[/{code}]` | non |
 | `compte()->quota()` | `GET /quota` | oui |
 
 ### Erreurs

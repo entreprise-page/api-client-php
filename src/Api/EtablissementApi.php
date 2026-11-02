@@ -21,7 +21,7 @@ final readonly class EtablissementApi
     /**
      * GET /organisation/etablissement/{siret} — nécessite une clé d'API.
      */
-    public function recuperer(string $siret): Etablissement
+    public function get(string $siret): Etablissement
     {
         return Etablissement::fromArray($this->transport->get('/organisation/etablissement/'.Transport::segment($siret)));
     }
@@ -31,7 +31,7 @@ final readonly class EtablissementApi
      *
      * @return list<Etablissement>
      */
-    public function listerParSiren(string $siren, ?EtablissementsQuery $filtres = null): array
+    public function listBySiren(string $siren, ?EtablissementsQuery $filtres = null): array
     {
         return Data::mapList(
             $this->transport->get('/organisation/entreprise/'.Transport::segment($siren).'/etablissement', $filtres?->toQuery() ?? []),

@@ -13,7 +13,7 @@ final class EntrepriseApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('entreprise.json');
 
-        $entreprise = $this->client->entreprises()->recuperer('009743865');
+        $entreprise = $this->client->entreprises()->get('009743865');
 
         self::assertSame('https://api.test/v1/organisation/entreprise/009743865', (string) $this->http->lastRequest()->getUri());
         self::assertSame('009743865', $entreprise->siren);
@@ -31,7 +31,7 @@ final class EntrepriseApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('recherche_entreprise.json');
 
-        $resultat = $this->client->entreprises()->rechercher('victor hugo');
+        $resultat = $this->client->entreprises()->search('victor hugo');
 
         self::assertSame(['query' => 'victor hugo'], $this->lastQuery());
         self::assertSame(1, $resultat->page);
@@ -44,7 +44,7 @@ final class EntrepriseApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('recherche_entreprise.json');
 
-        $this->client->entreprises()->rechercher(new RechercheEntrepriseQuery(
+        $this->client->entreprises()->search(new RechercheEntrepriseQuery(
             query: 'plombier',
             activites: ['43.22A', '43.22B'],
             categoriesJuridiques: [5499, 5710],
@@ -73,7 +73,7 @@ final class EntrepriseApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('suggestions.json');
 
-        $suggestions = $this->client->entreprises()->suggerer('gain', 2);
+        $suggestions = $this->client->entreprises()->suggest('gain', 2);
 
         self::assertSame(['query' => 'gain', 'limit' => '2'], $this->lastQuery());
         self::assertCount(2, $suggestions);

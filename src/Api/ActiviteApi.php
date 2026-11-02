@@ -24,7 +24,7 @@ final readonly class ActiviteApi
      *
      * @return list<Activite>
      */
-    public function lister(): array
+    public function list(): array
     {
         return Data::mapList($this->transport->get('/dictionnaire/activite'), Activite::fromArray(...));
     }
@@ -34,7 +34,7 @@ final readonly class ActiviteApi
      *
      * @param string $code code APE, par exemple « 62.02A »
      */
-    public function recuperer(string $code): Activite
+    public function get(string $code): Activite
     {
         return Activite::fromArray($this->transport->get('/dictionnaire/activite/'.Transport::segment($code)));
     }
@@ -43,7 +43,7 @@ final readonly class ActiviteApi
      * GET /dictionnaire/recherche/activite — retrouve des codes NAF depuis un terme courant.
      * Les codes obtenus s'utilisent dans RechercheEntrepriseQuery::$activites.
      */
-    public function rechercher(RechercheActiviteQuery|string $query): RechercheActivite
+    public function search(RechercheActiviteQuery|string $query): RechercheActivite
     {
         if (\is_string($query)) {
             $query = new RechercheActiviteQuery($query);

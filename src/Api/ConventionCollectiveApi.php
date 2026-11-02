@@ -22,7 +22,7 @@ final readonly class ConventionCollectiveApi
      *
      * @return list<Convention>
      */
-    public function lister(): array
+    public function list(): array
     {
         return Data::mapList($this->transport->get('/dictionnaire/convention-collective'), Convention::fromArray(...));
     }
@@ -32,7 +32,7 @@ final readonly class ConventionCollectiveApi
      *
      * @param string $idcc code IDCC, par exemple « 1486 »
      */
-    public function recuperer(string $idcc): Convention
+    public function get(string $idcc): Convention
     {
         return Convention::fromArray($this->transport->get('/dictionnaire/convention-collective/'.Transport::segment($idcc)));
     }

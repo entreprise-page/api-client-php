@@ -12,7 +12,7 @@ final class AnnonceApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('annonces.json');
 
-        $annonces = $this->client->annonces()->listerParSiren('443061841');
+        $annonces = $this->client->annonces()->listBySiren('443061841');
 
         self::assertSame('/v1/organisation/entreprise/443061841/annonce', $this->http->lastRequest()->getUri()->getPath());
         self::assertCount(1, $annonces);

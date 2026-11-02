@@ -37,7 +37,7 @@ final class ClientTest extends ApiTestCase
     {
         $http = (new FakeHttpClient())->willRespond(200, '[]');
 
-        (new Client(httpClient: $http, requestFactory: new Psr17Factory()))->entreprises()->suggerer('google');
+        (new Client(httpClient: $http, requestFactory: new Psr17Factory()))->entreprises()->suggest('google');
 
         self::assertFalse($http->lastRequest()->hasHeader('X-API-Key'));
         self::assertSame('https://api.entreprise.page/v1/organisation/suggestion?query=google', (string) $http->lastRequest()->getUri());
@@ -48,7 +48,7 @@ final class ClientTest extends ApiTestCase
         $this->http->willRespond(404, '"entreprise introuvable"');
 
         try {
-            $this->client->entreprises()->recuperer('../quota?x=1');
+            $this->client->entreprises()->get('../quota?x=1');
         } catch (NotFoundException) {
         }
 
@@ -64,7 +64,7 @@ final class ClientTest extends ApiTestCase
         $this->http->willRespond($status, $body);
 
         try {
-            $this->client->entreprises()->recuperer('000000000');
+            $this->client->entreprises()->get('000000000');
             self::fail('Une exception était attendue.');
         } catch (ApiException $e) {
             self::assertInstanceOf($exception, $e);

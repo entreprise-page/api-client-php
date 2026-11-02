@@ -13,7 +13,7 @@ final class EtablissementApiTest extends ApiTestCase
     {
         $this->http->willRespond(200, json_encode($this->premierEtablissement(), \JSON_THROW_ON_ERROR));
 
-        $etablissement = $this->client->etablissements()->recuperer('00974386500017');
+        $etablissement = $this->client->etablissements()->get('00974386500017');
 
         self::assertSame('/v1/organisation/etablissement/00974386500017', $this->http->lastRequest()->getUri()->getPath());
         self::assertSame('00974386500017', $etablissement->siret);
@@ -24,7 +24,7 @@ final class EtablissementApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('etablissements.json');
 
-        $etablissements = $this->client->etablissements()->listerParSiren('009743865', new EtablissementsQuery(
+        $etablissements = $this->client->etablissements()->listBySiren('009743865', new EtablissementsQuery(
             actifs: true,
             activites: ['81.10Z'],
             codesPostaux: ['35000', '35200'],
@@ -45,7 +45,7 @@ final class EtablissementApiTest extends ApiTestCase
     {
         $this->http->willRespondWithFixture('etablissements.json');
 
-        $this->client->etablissements()->listerParSiren('009743865');
+        $this->client->etablissements()->listBySiren('009743865');
 
         self::assertSame('', $this->http->lastRequest()->getUri()->getQuery());
     }

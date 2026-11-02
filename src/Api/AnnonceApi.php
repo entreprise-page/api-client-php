@@ -23,7 +23,7 @@ final readonly class AnnonceApi
      *
      * @return list<Annonce>
      */
-    public function listerParSiren(string $siren): array
+    public function listBySiren(string $siren): array
     {
         return Data::mapList(
             $this->transport->get('/organisation/entreprise/'.Transport::segment($siren).'/annonce'),

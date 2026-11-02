@@ -22,7 +22,7 @@ final readonly class FormeJuridiqueApi
      *
      * @return list<FormeJuridique>
      */
-    public function lister(): array
+    public function list(): array
     {
         return Data::mapList($this->transport->get('/dictionnaire/forme-juridique'), FormeJuridique::fromArray(...));
     }
@@ -32,7 +32,7 @@ final readonly class FormeJuridiqueApi
      *
      * @param string $code code de forme juridique, par exemple « 5499 »
      */
-    public function recuperer(string $code): FormeJuridique
+    public function get(string $code): FormeJuridique
     {
         return FormeJuridique::fromArray($this->transport->get('/dictionnaire/forme-juridique/'.Transport::segment($code)));
     }
