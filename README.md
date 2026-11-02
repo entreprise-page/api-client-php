@@ -89,8 +89,11 @@ services:
 ```bash
 composer install
 composer test
-composer phpstan
+composer lint      # php-cs-fixer (dry-run) puis PHPStan
+composer cs:fix    # applique les corrections de style
 ```
+
+La CI (job `sdk-php` du workflow `Testing`) lance `composer lint` en PHP 7.4 et 8.5 dès qu'un fichier de `sdk/php/api-client` change.
 
 `composer phpstan` vérifie `src` et `bin` pour toute la plage PHP 7.4 à 8.5, quelle que soit la version de PHP locale. Les tests tournent sous PHPUnit 9 en PHP 7.4 et sous PHPUnit 11 en PHP 8.2+ : ils n'utilisent ni arguments nommés ni syntaxe PHP 8, et déclarent leurs data providers à la fois en annotation et en attribut.
 

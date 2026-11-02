@@ -21,6 +21,7 @@
         "psr/http-message": "^1.1 || ^2.0"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.95",
         "nyholm/psr7": "^1.8",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^9.6 || ^11.5",
@@ -42,9 +43,15 @@
     "scripts": {
         "generate": "php bin/generate-models.php ../../../api/docs/swagger.json src/Model",
         "test": "phpunit",
+        "cs": "php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix",
         "phpstan": [
             "phpstan analyse",
             "phpstan analyse -c phpstan-tests.neon.dist"
+        ],
+        "lint": [
+            "@cs",
+            "@phpstan"
         ]
     },
     "config": {

@@ -21,7 +21,7 @@ final class FormeJuridiqueApi
     }
 
     /**
-     * GET /dictionnaire/forme-juridique
+     * GET /dictionnaire/forme-juridique.
      *
      * @return list<FormeJuridique>
      */
@@ -31,7 +31,7 @@ final class FormeJuridiqueApi
     }
 
     /**
-     * GET /dictionnaire/forme-juridique/{code}
+     * GET /dictionnaire/forme-juridique/{code}.
      *
      * @param string $code code de forme juridique, par exemple « 5499 »
      */

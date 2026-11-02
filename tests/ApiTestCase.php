@@ -24,9 +24,14 @@ abstract class ApiTestCase extends TestCase
      */
     protected function lastQuery(): array
     {
-        parse_str($this->http->lastRequest()->getUri()->getQuery(), $query);
+        parse_str($this->http->lastRequest()->getUri()->getQuery(), $parsed);
 
-        /** @var array<string, string> $query */
+        $query = [];
+        foreach ($parsed as $key => $value) {
+            self::assertIsString($value);
+            $query[(string) $key] = $value;
+        }
+
         return $query;
     }
 }

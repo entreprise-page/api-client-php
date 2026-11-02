@@ -21,7 +21,7 @@ final class ConventionCollectiveApi
     }
 
     /**
-     * GET /dictionnaire/convention-collective
+     * GET /dictionnaire/convention-collective.
      *
      * @return list<Convention>
      */
@@ -31,7 +31,7 @@ final class ConventionCollectiveApi
     }
 
     /**
-     * GET /dictionnaire/convention-collective/{code}
+     * GET /dictionnaire/convention-collective/{code}.
      *
      * @param string $idcc code IDCC, par exemple « 1486 »
      */

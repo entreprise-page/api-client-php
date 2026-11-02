@@ -24,7 +24,7 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        if (!(\is_string($value))) {
+        if (!\is_string($value)) {
             throw self::invalid($key, 'string', $value);
         }
 
@@ -46,7 +46,7 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        if (!(\is_int($value))) {
+        if (!\is_int($value)) {
             throw self::invalid($key, 'int', $value);
         }
 
@@ -90,7 +90,7 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        if (!(\is_bool($value))) {
+        if (!\is_bool($value)) {
             throw self::invalid($key, 'bool', $value);
         }
 
@@ -108,7 +108,7 @@ final class Data
     /**
      * @template T of object
      *
-     * @param array<mixed>               $data
+     * @param array<mixed>              $data
      * @param callable(array<mixed>): T $factory
      *
      * @return T
@@ -117,7 +117,7 @@ final class Data
     {
         $value = $data[$key] ?? null;
 
-        if (!(\is_array($value))) {
+        if (!\is_array($value)) {
             throw self::invalid($key, 'object', $value);
         }
 
@@ -127,7 +127,7 @@ final class Data
     /**
      * @template T of object
      *
-     * @param array<mixed>               $data
+     * @param array<mixed>              $data
      * @param callable(array<mixed>): T $factory
      *
      * @return T|null
@@ -140,7 +140,7 @@ final class Data
     /**
      * @template T of object
      *
-     * @param array<mixed>               $data
+     * @param array<mixed>              $data
      * @param callable(array<mixed>): T $factory
      *
      * @return list<T>
@@ -203,7 +203,7 @@ final class Data
      *
      * @template T of object
      *
-     * @param array<mixed>               $items
+     * @param array<mixed>              $items
      * @param callable(array<mixed>): T $factory
      *
      * @return list<T>

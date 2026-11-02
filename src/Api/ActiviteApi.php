@@ -23,7 +23,7 @@ final class ActiviteApi
     }
 
     /**
-     * GET /dictionnaire/activite
+     * GET /dictionnaire/activite.
      *
      * @return list<Activite>
      */
@@ -33,7 +33,7 @@ final class ActiviteApi
     }
 
     /**
-     * GET /dictionnaire/activite/{code}
+     * GET /dictionnaire/activite/{code}.
      *
      * @param string $code code APE, par exemple « 62.02A »
      */
