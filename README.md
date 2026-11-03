@@ -83,18 +83,3 @@ services:
             $httpClient: '@entreprise_page.http_client'
             $requestFactory: '@entreprise_page.http_client'
 ```
-
-## Développement
-
-```bash
-composer install
-composer test
-composer lint      # php-cs-fixer (dry-run) puis PHPStan
-composer cs:fix    # applique les corrections de style
-```
-
-La CI (job `sdk-php` du workflow `Testing`) lance `composer lint` en PHP 7.4 et 8.5 dès qu'un fichier de `sdk/php/api-client` change.
-
-`composer phpstan` vérifie `src` et `bin` pour toute la plage PHP 7.4 à 8.5, quelle que soit la version de PHP locale. Les tests tournent sous PHPUnit 9 en PHP 7.4 et sous PHPUnit 11 en PHP 8.2+ : ils n'utilisent ni arguments nommés ni syntaxe PHP 8, et déclarent leurs data providers à la fois en annotation et en attribut.
-
-Les modèles de `src/Model` sont générés depuis le swagger : après une modification des DTO Go et un `swag init`, lancer `composer generate`. Le test `GeneratedModelsTest` échoue tant que les modèles ne sont pas à jour. Les endpoints (`src/Api`) sont écrits à la main, car le swagger ne décrit pas toujours fidèlement les réponses (par exemple `/organisation/recherche` y est annoncé comme une liste alors que l'API renvoie un objet).
