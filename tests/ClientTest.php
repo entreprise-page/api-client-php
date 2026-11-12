@@ -17,6 +17,8 @@ use EntreprisePage\ApiClient\Exception\UnexpectedResponseException;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Message\StreamFactoryInterface;
+use Psr\Http\Message\StreamInterface;
 
 final class ClientTest extends ApiTestCase
 {
@@ -84,6 +86,7 @@ final class ClientTest extends ApiTestCase
     {
         yield 'chaîne JSON' => [404, '"entreprise 000000000 introuvable"', NotFoundException::class, 'entreprise 000000000 introuvable'];
         yield 'objet error' => [401, '{"error":"Clé d\'API inconnue"}', UnauthorizedException::class, 'Clé d\'API inconnue'];
+        yield 'objet erreur du suivi' => [404, '{"erreur":"Liste introuvable"}', NotFoundException::class, 'Liste introuvable'];
         yield 'quota' => [429, '{"error":"Quota dépassé"}', TooManyRequestsException::class, 'Quota dépassé'];
         yield 'requête invalide' => [400, '"le paramètre query est obligatoire"', BadRequestException::class, 'le paramètre query est obligatoire'];
         yield 'corps non JSON' => [502, 'Bad Gateway', ServerException::class, 'Bad Gateway'];
@@ -118,6 +121,53 @@ final class ClientTest extends ApiTestCase
         $this->expectExceptionMessage('Le champ "total" devrait être de type int, string reçu.');
 
         $this->client->compte()->quota();
+    }
+
+    public function testConvertitLesErreursReseauAvecLaMethode(): void
+    {
+        $this->http->willFail(new class('Connexion refusée') extends \RuntimeException implements ClientExceptionInterface {});
+
+        $this->expectException(TransportException::class);
+        $this->expectExceptionMessage('Échec de la requête DELETE /suivi/entreprise/552032534 : Connexion refusée');
+
+        $this->client->suivi()->unfollow('552032534');
+    }
+
+    public function testUtiliseLaFabriqueDeFluxFournie(): void
+    {
+        $http = (new FakeHttpClient())->willRespond(204, '');
+        $factory = new Psr17Factory();
+        $streams = new class($factory) implements StreamFactoryInterface {
+            public int $calls = 0;
+            private Psr17Factory $factory;
+
+            public function __construct(Psr17Factory $factory)
+            {
+                $this->factory = $factory;
+            }
+
+            public function createStream(string $content = ''): StreamInterface
+            {
+                ++$this->calls;
+
+                return $this->factory->createStream($content);
+            }
+
+            public function createStreamFromFile(string $filename, string $mode = 'r'): StreamInterface
+            {
+                return $this->factory->createStreamFromFile($filename, $mode);
+            }
+
+            public function createStreamFromResource($resource): StreamInterface
+            {
+                return $this->factory->createStreamFromResource($resource);
+            }
+        };
+
+        (new Client('cle', $http, $factory, Client::DEFAULT_BASE_URI, Client::USER_AGENT, $streams))->suivi()->follow(1, '552032534');
+
+        self::assertSame(1, $streams->calls);
+        self::assertSame('{"siren":"552032534"}', (string) $http->lastRequest()->getBody());
     }
 
     public function testDecouvreUneImplementationPsr18InstalleeParDefaut(): void

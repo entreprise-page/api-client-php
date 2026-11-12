@@ -55,7 +55,8 @@ class ApiException extends \RuntimeException implements ExceptionInterface
     }
 
     /**
-     * L'API renvoie soit une chaîne JSON (`"message"`), soit un objet `{"error": "message"}`.
+     * L'API renvoie soit une chaîne JSON (`"message"`), soit un objet `{"error": "message"}`
+     * ou, pour le suivi, `{"erreur": "message"}`.
      */
     private static function extractMessage(ResponseInterface $response): string
     {
@@ -71,8 +72,12 @@ class ApiException extends \RuntimeException implements ExceptionInterface
         if (\is_string($decoded) && '' !== $decoded) {
             return $decoded;
         }
-        if (\is_array($decoded) && \is_string($decoded['error'] ?? null)) {
-            return $decoded['error'];
+        if (\is_array($decoded)) {
+            foreach (['error', 'erreur'] as $key) {
+                if (\is_string($decoded[$key] ?? null) && '' !== $decoded[$key]) {
+                    return $decoded[$key];
+                }
+            }
         }
 
         return $fallback;

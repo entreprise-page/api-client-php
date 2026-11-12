@@ -54,6 +54,41 @@ $resultats = $client->entreprises()->search(
 | `conventionsCollectives()->list()` / `get($idcc)` | `GET /dictionnaire/convention-collective[/{code}]` | non |
 | `formesJuridiques()->list()` / `get($code)` | `GET /dictionnaire/forme-juridique[/{code}]` | non |
 | `compte()->quota()` | `GET /quota` | oui |
+| `suivi()->lists()` / `createList($nom)` / `deleteList($listeId)` | `GET` / `POST /suivi/liste`, `DELETE /suivi/liste/{listeId}` | oui |
+| `suivi()->companies($listeId, $page, $parPage)` | `GET /suivi/entreprise` | oui |
+| `suivi()->isFollowed($siren)` / `unfollow($siren)` | `GET` / `DELETE /suivi/entreprise/{siren}` | oui |
+| `suivi()->follow($listeId, $siren)` / `removeFromList($listeId, $siren)` | `POST /suivi/liste/{listeId}/entreprise`, `DELETE …/entreprise/{siren}` | oui |
+| `suivi()->import($listeId, $sirens)` | `POST /suivi/liste/{listeId}/import` | oui |
+| `suivi()->alert($listeId)` / `configureAlert($listeId, $alerte)` | `GET` / `PUT /suivi/liste/{listeId}/alerte` | oui |
+| `suivi()->enableAlert($listeId)` / `disableAlert($listeId)` | `POST /suivi/liste/{listeId}/alerte/activer` / `desactiver` | oui |
+
+### Suivi d'entreprises
+
+Les endpoints `suivi()` agissent sur les listes de suivi de l'organisation rattachée à la clé d'API, sans consommer le quota.
+
+```php
+use EntreprisePage\ApiClient\Model\SuiviConfigurationAlerte;
+use EntreprisePage\ApiClient\Model\SuiviConfigurationAlerteEmail;
+use EntreprisePage\ApiClient\Model\SuiviConfigurationAlerteWebhook;
+
+$liste = $client->suivi()->createList('Fournisseurs');
+$client->suivi()->follow($liste->id, '552032534');
+
+// Un siren invalide ou introuvable compte comme une erreur sans interrompre l'import.
+$statut = $client->suivi()->import($liste->id, ['542051180', '443061841']);
+
+foreach ($client->suivi()->companies($liste->id)->entreprises as $entreprise) {
+    echo $entreprise->siren, ' ', $entreprise->denomination ?? '(non diffusable)', "\n";
+}
+
+// Remplace toute l'alerte : les événements possibles sont dans alert($id)->evenementsDisponibles.
+$client->suivi()->configureAlert($liste->id, new SuiviConfigurationAlerte(
+    true,
+    new SuiviConfigurationAlerteEmail(true, ['veille@exemple.fr']),
+    ['fermeture_entreprise', 'changement_denomination'],
+    new SuiviConfigurationAlerteWebhook(false, '', ''), // actif, token, url
+));
+```
 
 ### Erreurs
 

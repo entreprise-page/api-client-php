@@ -11,18 +11,21 @@ use EntreprisePage\ApiClient\Api\ConventionCollectiveApi;
 use EntreprisePage\ApiClient\Api\EntrepriseApi;
 use EntreprisePage\ApiClient\Api\EtablissementApi;
 use EntreprisePage\ApiClient\Api\FormeJuridiqueApi;
+use EntreprisePage\ApiClient\Api\SuiviApi;
 use EntreprisePage\ApiClient\Http\Transport;
 use Http\Discovery\Psr17FactoryDiscovery;
 use Http\Discovery\Psr18ClientDiscovery;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
+use Psr\Http\Message\StreamFactoryInterface;
 
 /**
  * Point d'entrée du SDK de l'API entreprise.page.
  *
  * Le client HTTP est n'importe quelle implémentation PSR-18 (Symfony HttpClient,
  * Guzzle…) : il peut être décoré pour ajouter du cache, des retries ou des logs.
- * S'il n'est pas fourni, une implémentation installée est découverte automatiquement.
+ * S'il n'est pas fourni, une implémentation installée est découverte automatiquement,
+ * comme les fabriques PSR-17.
  */
 final class Client
 {
@@ -38,20 +41,29 @@ final class Client
     private ?ConventionCollectiveApi $conventionsCollectives = null;
     private ?FormeJuridiqueApi $formesJuridiques = null;
     private ?CompteApi $compte = null;
+    private ?SuiviApi $suivi = null;
 
     /**
-     * @param string|null $apiKey clé envoyée dans l'en-tête X-API-Key, obligatoire pour les endpoints `organisation` et `quota`
+     * @param string|null                 $apiKey        clé envoyée dans l'en-tête X-API-Key, obligatoire pour les endpoints `organisation`, `quota` et `suivi`
+     * @param StreamFactoryInterface|null $streamFactory fabrique des corps de requête JSON ; par défaut $requestFactory s'il l'implémente (Nyholm, Guzzle, Symfony Psr18Client), sinon découverte
      */
     public function __construct(
         ?string $apiKey = null,
         ?ClientInterface $httpClient = null,
         ?RequestFactoryInterface $requestFactory = null,
         string $baseUri = self::DEFAULT_BASE_URI,
-        string $userAgent = self::USER_AGENT
+        string $userAgent = self::USER_AGENT,
+        ?StreamFactoryInterface $streamFactory = null
     ) {
+        $requestFactory ??= Psr17FactoryDiscovery::findRequestFactory();
+        if (null === $streamFactory) {
+            $streamFactory = $requestFactory instanceof StreamFactoryInterface ? $requestFactory : Psr17FactoryDiscovery::findStreamFactory();
+        }
+
         $this->transport = new Transport(
             $httpClient ?? Psr18ClientDiscovery::find(),
-            $requestFactory ?? Psr17FactoryDiscovery::findRequestFactory(),
+            $requestFactory,
+            $streamFactory,
             $baseUri,
             $apiKey,
             $userAgent,
@@ -91,5 +103,13 @@ final class Client
     public function compte(): CompteApi
     {
         return $this->compte ??= new CompteApi($this->transport);
+    }
+
+    /**
+     * Listes de suivi, entreprises suivies et alertes de l'organisation de la clé d'API.
+     */
+    public function suivi(): SuiviApi
+    {
+        return $this->suivi ??= new SuiviApi($this->transport);
     }
 }
