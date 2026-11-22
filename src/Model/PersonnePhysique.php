@@ -12,6 +12,13 @@ use EntreprisePage\ApiClient\Hydration\Data;
 final class PersonnePhysique
 {
     /**
+     * Exemple : true
+     *
+     * @readonly
+     */
+    public bool $actif;
+
+    /**
      * Exemple : "1980-01"
      *
      * @readonly
@@ -40,11 +47,13 @@ final class PersonnePhysique
     public ?string $role;
 
     public function __construct(
+        bool $actif,
         ?string $dateNaissance,
         string $nom,
         ?string $prenom,
         ?string $role
     ) {
+        $this->actif = $actif;
         $this->dateNaissance = $dateNaissance;
         $this->nom = $nom;
         $this->prenom = $prenom;
@@ -57,6 +66,7 @@ final class PersonnePhysique
     public static function fromArray(array $data): self
     {
         return new self(
+            Data::bool($data, 'actif'),
             Data::nullableString($data, 'date_naissance'),
             Data::string($data, 'nom'),
             Data::nullableString($data, 'prenom'),

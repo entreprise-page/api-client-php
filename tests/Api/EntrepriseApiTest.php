@@ -28,6 +28,10 @@ final class EntrepriseApiTest extends ApiTestCase
         self::assertSame(48.112573, $entreprise->siegeSocial->adresse->coordonnees->latitude);
         self::assertNull($entreprise->registre->rcs, 'rcs est omis par l\'API quand il est absent');
         self::assertSame([], $entreprise->finances);
+        self::assertSame('Dupont', $entreprise->dirigeant->personnePhysique[0]->nom);
+        self::assertTrue($entreprise->dirigeant->personnePhysique[0]->actif);
+        self::assertSame('ERNST & YOUNG ET AUTRES', $entreprise->dirigeant->personneMorale[0]->denomination);
+        self::assertFalse($entreprise->dirigeant->personneMorale[0]->actif, 'Un ancien dirigeant est conservé, inactif');
     }
 
     public function testRechercherAvecUneChaine(): void

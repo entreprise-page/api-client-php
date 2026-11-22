@@ -12,6 +12,13 @@ use EntreprisePage\ApiClient\Hydration\Data;
 final class PersonneMorale
 {
     /**
+     * Exemple : true
+     *
+     * @readonly
+     */
+    public bool $actif;
+
+    /**
      * Exemple : "ERNST & YOUNG ET AUTRES"
      *
      * @readonly
@@ -33,10 +40,12 @@ final class PersonneMorale
     public ?string $siren;
 
     public function __construct(
+        bool $actif,
         string $denomination,
         ?string $role,
         ?string $siren
     ) {
+        $this->actif = $actif;
         $this->denomination = $denomination;
         $this->role = $role;
         $this->siren = $siren;
@@ -48,6 +57,7 @@ final class PersonneMorale
     public static function fromArray(array $data): self
     {
         return new self(
+            Data::bool($data, 'actif'),
             Data::string($data, 'denomination'),
             Data::nullableString($data, 'role'),
             Data::nullableString($data, 'siren'),
