@@ -34,6 +34,7 @@ final class QueryValidationTest extends TestCase
         yield 'rayon trop petit' => [static fn () => RechercheEntrepriseQuery::create('a')->withZone(45.0, 4.0, 0), 'entre 1 et 500'];
         yield 'rayon trop grand' => [static fn () => RechercheEntrepriseQuery::create('a')->withZone(45.0, 4.0, 501), 'entre 1 et 500'];
         yield 'par page entreprise' => [static fn () => RechercheEntrepriseQuery::create('a')->withParPage(251), 'entre 1 et 250'];
+        yield 'code postal tronqué' => [static fn () => RechercheEntrepriseQuery::create('a')->withCodesPostaux(['6925']), '5 chiffres attendus'];
         yield 'page nulle' => [static fn () => RechercheEntrepriseQuery::create('a')->withPage(0), 'supérieure ou égale à 1'];
         yield 'activité vide' => [static fn () => RechercheActiviteQuery::create('  '), 'query est obligatoire'];
         yield 'par page activité' => [static fn () => RechercheActiviteQuery::create('plombier')->withParPage(101), 'entre 1 et 100'];

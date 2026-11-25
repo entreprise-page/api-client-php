@@ -39,6 +39,17 @@ $resultats = $client->entreprises()->search(
         ->withZone(45.7672724, 4.8340594, 10)
         ->withParPage(50)
 );
+
+// Plutôt qu'une zone autour d'un point : départements, région ou codes postaux.
+$lyonnais = $client->entreprises()->search(
+    RechercheEntrepriseQuery::create('*')
+        ->withActivites($codes)
+        ->withDepartements(['69'])
+        ->withCodesPostaux(['69250'])
+);
+
+// Le statut détaille est_actif : actif, inactif, ferme ou cessee, avec la date de cessation.
+echo $entreprise->meta->statut->code, ' ', $entreprise->meta->statut->date ?? '';
 ```
 
 | Méthode | Endpoint | Clé d'API |

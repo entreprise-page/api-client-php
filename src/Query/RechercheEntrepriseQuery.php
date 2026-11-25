@@ -30,6 +30,15 @@ final class RechercheEntrepriseQuery
     private ?float $latitude = null;
     private ?float $longitude = null;
     private ?int $rayon = null;
+
+    /** @var list<string> */
+    private array $departements = [];
+
+    private ?string $region = null;
+
+    /** @var list<string> */
+    private array $codesPostaux = [];
+
     private ?int $page = null;
     private ?int $parPage = null;
 
@@ -93,6 +102,45 @@ final class RechercheEntrepriseQuery
         return $clone;
     }
 
+    /**
+     * @param list<string> $codes codes de département, par exemple ['69', '2A', '974']
+     */
+    public function withDepartements(array $codes): self
+    {
+        $clone = clone $this;
+        $clone->departements = $codes;
+
+        return $clone;
+    }
+
+    /**
+     * @param string $code code de région, par exemple '84' : l'ensemble de ses départements
+     */
+    public function withRegion(string $code): self
+    {
+        $clone = clone $this;
+        $clone->region = $code;
+
+        return $clone;
+    }
+
+    /**
+     * @param list<string> $codes codes postaux à 5 chiffres, par exemple ['69250'], pour viser une commune
+     */
+    public function withCodesPostaux(array $codes): self
+    {
+        foreach ($codes as $code) {
+            if (1 !== preg_match('/^\d{5}$/', $code)) {
+                throw new InvalidArgumentException(sprintf('code postal invalide : "%s", 5 chiffres attendus.', $code));
+            }
+        }
+
+        $clone = clone $this;
+        $clone->codesPostaux = $codes;
+
+        return $clone;
+    }
+
     public function withPage(int $page): self
     {
         if ($page < 1) {
@@ -133,6 +181,9 @@ final class RechercheEntrepriseQuery
             'latitude' => QueryValue::float($this->latitude),
             'longitude' => QueryValue::float($this->longitude),
             'rayon' => QueryValue::int($this->rayon),
+            'departement' => implode(',', $this->departements),
+            'region' => $this->region,
+            'code_postal' => implode(',', $this->codesPostaux),
             'page' => QueryValue::int($this->page),
             'par_page' => QueryValue::int($this->parPage),
         ]);

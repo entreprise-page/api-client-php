@@ -28,6 +28,8 @@ final class EntrepriseApiTest extends ApiTestCase
         self::assertSame(48.112573, $entreprise->siegeSocial->adresse->coordonnees->latitude);
         self::assertNull($entreprise->registre->rcs, 'rcs est omis par l\'API quand il est absent');
         self::assertSame([], $entreprise->finances);
+        self::assertSame('actif', $entreprise->meta->statut->code);
+        self::assertNull($entreprise->meta->statut->date);
         self::assertSame('Dupont', $entreprise->dirigeant->personnePhysique[0]->nom);
         self::assertTrue($entreprise->dirigeant->personnePhysique[0]->actif);
         self::assertSame('ERNST & YOUNG ET AUTRES', $entreprise->dirigeant->personneMorale[0]->denomination);
@@ -45,6 +47,8 @@ final class EntrepriseApiTest extends ApiTestCase
         self::assertCount(2, $resultat->resultats);
         self::assertSame('009743865', $resultat->resultats[0]->siren);
         self::assertNull($resultat->resultats[0]->distanceMetres);
+        self::assertSame('cessee', $resultat->resultats[1]->meta->statut->code);
+        self::assertSame('2019-12-31', $resultat->resultats[1]->meta->statut->date);
     }
 
     public function testRechercherEncodeTousLesCriteres(): void
@@ -57,6 +61,9 @@ final class EntrepriseApiTest extends ApiTestCase
                 ->withCategoriesJuridiques([5499, 5710])
                 ->withActif(false)
                 ->withZone(45.7672724, 4.8340594, 15)
+                ->withDepartements(['69', '2A'])
+                ->withRegion('84')
+                ->withCodesPostaux(['69250', '69001'])
                 ->withPage(2)
                 ->withParPage(50)
         );
@@ -69,6 +76,9 @@ final class EntrepriseApiTest extends ApiTestCase
             'latitude' => '45.7672724',
             'longitude' => '4.8340594',
             'rayon' => '15',
+            'departement' => '69,2A',
+            'region' => '84',
+            'code_postal' => '69250,69001',
             'page' => '2',
             'par_page' => '50',
         ], $this->lastQuery());

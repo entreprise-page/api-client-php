@@ -41,6 +41,11 @@ final class Meta
     public string $slug;
 
     /**
+     * @readonly
+     */
+    public Statut $statut;
+
+    /**
      * todo: compter uniquement les actifs
      * Exemple : 15
      *
@@ -53,12 +58,14 @@ final class Meta
         bool $estActif,
         bool $estDiffusable,
         string $slug,
+        Statut $statut,
         int $totalEtablissementActif
     ) {
         $this->categorieEntreprise = $categorieEntreprise;
         $this->estActif = $estActif;
         $this->estDiffusable = $estDiffusable;
         $this->slug = $slug;
+        $this->statut = $statut;
         $this->totalEtablissementActif = $totalEtablissementActif;
     }
 
@@ -72,6 +79,7 @@ final class Meta
             Data::bool($data, 'est_actif'),
             Data::bool($data, 'est_diffusable'),
             Data::string($data, 'slug'),
+            Data::object($data, 'statut', [Statut::class, 'fromArray']),
             Data::int($data, 'total_etablissement_actif'),
         );
     }
