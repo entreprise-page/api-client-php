@@ -40,6 +40,7 @@ final class SuiviEntreprise
     public ?string $dateEnActivite;
 
     /**
+     * DateEnCessation est la date du statut quand l'entreprise n'est plus active.
      * Exemple : "2024-12-31"
      *
      * @readonly
@@ -81,6 +82,11 @@ final class SuiviEntreprise
      */
     public string $slug;
 
+    /**
+     * @readonly
+     */
+    public SuiviStatut $statut;
+
     public function __construct(
         string $activiteCode,
         ?string $activiteLibelle,
@@ -91,7 +97,8 @@ final class SuiviEntreprise
         bool $estActive,
         bool $estDiffusable,
         string $siren,
-        string $slug
+        string $slug,
+        SuiviStatut $statut
     ) {
         $this->activiteCode = $activiteCode;
         $this->activiteLibelle = $activiteLibelle;
@@ -103,6 +110,7 @@ final class SuiviEntreprise
         $this->estDiffusable = $estDiffusable;
         $this->siren = $siren;
         $this->slug = $slug;
+        $this->statut = $statut;
     }
 
     /**
@@ -121,6 +129,7 @@ final class SuiviEntreprise
             Data::bool($data, 'est_diffusable'),
             Data::string($data, 'siren'),
             Data::string($data, 'slug'),
+            Data::object($data, 'statut', [SuiviStatut::class, 'fromArray']),
         );
     }
 }

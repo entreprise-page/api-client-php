@@ -18,7 +18,7 @@ final class SuiviListes
     public array $listes;
 
     /**
-     * Exemple : 5
+     * Exemple : 3
      *
      * @readonly
      */
