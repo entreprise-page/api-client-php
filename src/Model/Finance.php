@@ -26,6 +26,13 @@ final class Finance
     public float $chiffreAffaire;
 
     /**
+     * Exemple : "2025-12-31"
+     *
+     * @readonly
+     */
+    public ?string $dateClotureExercice;
+
+    /**
      * Exemple : 268000
      *
      * @readonly
@@ -42,11 +49,13 @@ final class Finance
     public function __construct(
         int $annee,
         float $chiffreAffaire,
+        ?string $dateClotureExercice,
         float $margeBrut,
         float $resultatNet
     ) {
         $this->annee = $annee;
         $this->chiffreAffaire = $chiffreAffaire;
+        $this->dateClotureExercice = $dateClotureExercice;
         $this->margeBrut = $margeBrut;
         $this->resultatNet = $resultatNet;
     }
@@ -59,6 +68,7 @@ final class Finance
         return new self(
             Data::int($data, 'annee'),
             Data::float($data, 'chiffre_affaire'),
+            Data::nullableString($data, 'date_cloture_exercice'),
             Data::float($data, 'marge_brut'),
             Data::float($data, 'resultat_net'),
         );
